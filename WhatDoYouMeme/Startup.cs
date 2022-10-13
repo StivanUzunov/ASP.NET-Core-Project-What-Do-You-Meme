@@ -1,3 +1,5 @@
+using WhatDoYouMeme.Infrastructure;
+
 namespace WhatDoYouMeme
 {
     using Microsoft.AspNetCore.Builder;
@@ -34,6 +36,8 @@ namespace WhatDoYouMeme
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.PrepareDatabase();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -55,6 +59,8 @@ namespace WhatDoYouMeme
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapRazorPages();
             });
+
+            
         }
     }
 }
