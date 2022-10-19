@@ -8,11 +8,13 @@ namespace WhatDoYouMeme.Data.Models
         public int Id { get; init; }
 
         [Required]
+        [MaxLength(ImgURLMaxLength)]
         public string ImageUrl { get; set; }
         [Required]
-        public int Date { get; set; }
+        public string Date { get; set; }
         [Required]
         [MaxLength(PostDescriptionMaxLength)]
+        [MinLength(PostDescriptionMinLength)]
         public string Description { get; set; }
         [Required]
         public int Likes { get; set; }
