@@ -14,5 +14,9 @@ namespace WhatDoYouMeme.Data.Models
         [Required]
         public int Likes { get; set; }
 
+        [Required]
+        public int PostId { get; set; }
+        [Required]
+        public Post Post { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using WhatDoYouMeme.Data;
 using WhatDoYouMeme.Data.Models;
@@ -14,6 +15,24 @@ namespace WhatDoYouMeme.Controllers
         public MemesController(ApplicationDbContext data) => this.data = data;
         public IActionResult Add() => View( new AddMemeFormModel());
 
+        public IActionResult All()
+        {
+            var memes = this.data
+                .Posts
+                .OrderByDescending(m => m.Id)
+                .Select(m => new MemeListingViewModel
+                {
+                    Id = m.Id,
+                    ImageUrl = m.ImageUrl,
+                    Description = m.Description,
+                    Date = m.Date,
+                    Likes = m.Likes,
+                   // Comments = m.Comments
+                })
+                .ToList();
+
+            return View(memes);
+        }
         [HttpPost]
         public IActionResult Add(AddMemeFormModel meme)
         {

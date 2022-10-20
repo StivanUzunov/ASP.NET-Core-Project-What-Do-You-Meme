@@ -1,8 +1,57 @@
-﻿@{
+﻿@model List<MemeListingViewModel>
+
+
+@{
     ViewData["Title"] = "The Best Meme collection";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@{
+    var firstMeme = Model.Any() ? Model[0] : null;
+    var secondMeme = Model.Count > 1 ? Model[1] : null;
+    var thirdMeme = Model.Count > 2 ? Model[2] : null;
+}
+
+@{
+    if (!Model.Any()) { 
+
+        <div class="jumbotron">
+            <h1 class="display-4">Welcome to my What do you Meme page!</h1>
+            <p class="lead">There are no Memes in the system currently so why don't you add one?'</p>
+            <p class="lead">
+                <a asp-controller="Memes" asp-action="Add" class="btn btn-primary btn-lg" role="button">Add Meme</a>
+            </p>
+        </div>
+    }
+}
+
+<h1 style="margin-bottom: 48px; text-align:center ">Newest Memes</h1>
+<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner" >
+        @if (firstMeme != null)
+        {
+            <div class="carousel-item active" style="max-height: 700px; min-height: 600px; object-fit: cover ">
+                <img class="d-block w-100" src="@firstMeme.ImageUrl" alt="First meme">
+            </div>
+        }
+        @if (secondMeme != null)
+        {
+            <div class="carousel-item" style="max-height: 700px; min-height: 600px; object-fit: cover">
+                <img class="d-block w-100" src="@secondMeme.ImageUrl" alt="Second meme">
+            </div>
+        }
+      @if (thirdMeme != null)
+      {
+          <div class="carousel-item" style="max-height: 700px; min-height: 600px; object-fit: cover">
+              <img class="d-block w-100" src="@thirdMeme.ImageUrl" alt="Third meme">
+          </div>
+      }
+    </div>
+    <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
 </div>
