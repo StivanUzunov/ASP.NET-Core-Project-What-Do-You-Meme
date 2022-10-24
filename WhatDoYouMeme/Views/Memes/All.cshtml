@@ -1,6 +1,5 @@
 ﻿@model IEnumerable<MemeListingViewModel>
 
-
 <div class="row">
     @foreach (var meme in Model)
     {
@@ -10,19 +9,24 @@
                 <p class="card-text">@meme.Description</p>
                 <p class="card-text">@meme.Date</p>
             </div>
-            @*<ul class="list-group list-group-flush">
-                @foreach (var comment in meme.Comments)
-                {
-                    <li>
+            @*@if (meme.Comments.Any()) { 
+                <ul class="list-group list-group-flush">
+                    @foreach (var comment in meme.Comments)
+                    {
+                        <li>
 
-                        <p>@comment.CommentText</p>
-                        <a href="#" class="card-link">Like</a>
-                    </li>
-                }
-            </ul>*@
+                            <p>@comment.CommentText</p>
+                            <a href="#" class="card-link">Like</a>
+                        </li>
+                    }
+                </ul>
+            }*@
             <div class="card-body">
                 <a href="#" class="card-link">Like</a>
+                <span>@meme.Likes total likes</span>
             </div>
         </div>
     }
+ 
 </div>
+

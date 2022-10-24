@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WhatDoYouMeme.Data;
 using WhatDoYouMeme.Data.Models;
@@ -29,11 +30,12 @@ namespace WhatDoYouMeme.Controllers
                     Likes = m.Likes,
                    // Comments = m.Comments
                 })
-                .ToList();
+              .ToList();
 
             return View(memes);
         }
         [HttpPost]
+        [Authorize]
         public IActionResult Add(AddMemeFormModel meme)
         {
             if (!ModelState.IsValid)

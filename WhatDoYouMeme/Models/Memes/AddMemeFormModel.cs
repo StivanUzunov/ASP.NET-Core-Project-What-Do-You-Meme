@@ -17,6 +17,6 @@ namespace WhatDoYouMeme.Models.Memes
         [StringLength(PostDescriptionMaxLength, MinimumLength = PostDescriptionMinLength)]
         public string Description { get; init; }
         public int Likes { get; init; }
-        public IEnumerable<Comment> Comments { get; init; } 
+     
     }
 }

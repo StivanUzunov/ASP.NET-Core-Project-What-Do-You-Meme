@@ -1,8 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Linq;
+using Microsoft.CodeAnalysis.Operations;
 using WhatDoYouMeme.Data;
+using WhatDoYouMeme.Data.Models;
 using WhatDoYouMeme.Models;
+using WhatDoYouMeme.Models.Home;
 using WhatDoYouMeme.Models.Memes;
 
 namespace WhatDoYouMeme.Controllers
@@ -11,8 +15,11 @@ namespace WhatDoYouMeme.Controllers
     {
         private readonly ApplicationDbContext data;
         public HomeController(ApplicationDbContext data) => this.data = data;
+ 
         public IActionResult Index()
         {
+            var totalMemes = this.data.Posts.Count();
+            var totalUsers = this.data.Users.Count();
             var memes = this.data
                 .Posts
                 .OrderByDescending(m => m.Id)
@@ -22,13 +29,17 @@ namespace WhatDoYouMeme.Controllers
                     ImageUrl = m.ImageUrl,
                     Description = m.Description,
                     Date = m.Date,
-                    Likes = m.Likes,
-                    // Comments = m.Comments
+                    Likes = m.Likes
                 })
                 .Take(3)
                 .ToList();
 
-            return View(memes);
+            return View(new IndexViewModel
+            {
+                TotalMemes = totalMemes,
+                TotalUsers = totalUsers,
+                Posts = memes
+            });
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

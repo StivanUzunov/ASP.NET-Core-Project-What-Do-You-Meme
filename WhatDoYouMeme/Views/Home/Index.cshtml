@@ -1,4 +1,4 @@
-﻿@model List<MemeListingViewModel>
+﻿@model IndexViewModel
 
 
 @{
@@ -6,13 +6,14 @@
 }
 
 @{
-    var firstMeme = Model.Any() ? Model[0] : null;
-    var secondMeme = Model.Count > 1 ? Model[1] : null;
-    var thirdMeme = Model.Count > 2 ? Model[2] : null;
+    var memes = Model.Posts;
+    var firstMeme = memes.Any() ? memes[0] : null;
+    var secondMeme = memes.Count > 1 ? memes[1] : null;
+    var thirdMeme = memes.Count > 2 ? memes[2] : null;
 }
 
 @{
-    if (!Model.Any()) { 
+    if (!memes.Any()) { 
 
         <div class="jumbotron">
             <h1 class="display-4">Welcome to my What do you Meme page!</h1>
@@ -54,4 +55,15 @@
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
         <span class="sr-only">Next</span>
     </a>
+</div>
+
+<div class="jumbotron" style="margin-top: 24px">
+    <div class="row">
+        <div class="col-md-6" style="text-align: center; font-size: 24px; font-weight: bold">
+           @Model.TotalMemes Memes
+        </div>
+        <div class="col-md-6" style="text-align: center; font-size: 24px; font-weight: bold ">
+            @Model.TotalUsers Users
+        </div>
+    </div>
 </div>

@@ -18,7 +18,8 @@ namespace WhatDoYouMeme.Data.Models
         public string Description { get; set; }
         [Required]
         public int Likes { get; set; }
-
+        public int MemerId { get; init; }
+        public Memer Memer { get; init; }
         public IEnumerable<Comment> Comments { get; set; } = new List<Comment>();
     }
 }

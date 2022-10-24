@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using WhatDoYouMeme.Infrastructure;
 
 namespace WhatDoYouMeme
@@ -32,7 +33,10 @@ namespace WhatDoYouMeme
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services
-                .AddControllersWithViews();
+                .AddControllersWithViews(options =>
+                {
+                    options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
+                });
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
