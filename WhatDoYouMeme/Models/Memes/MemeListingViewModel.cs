@@ -12,6 +12,8 @@ namespace WhatDoYouMeme.Models.Memes
         public string ImageUrl { get; init; }
         public string Description { get; init; }
         public int Likes { get; init; }
+        public int MemerId { get; set; }
         public IEnumerable<Comment> Comments { get; init; }
+
     }
 }
