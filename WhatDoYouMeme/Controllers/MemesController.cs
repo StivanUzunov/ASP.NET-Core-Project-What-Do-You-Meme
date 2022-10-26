@@ -11,10 +11,36 @@ using WhatDoYouMeme.Models.Memes;
 
 namespace WhatDoYouMeme.Controllers
 {
-    public class MemesController:Controller
+    public class MemesController : Controller
     {
         private readonly ApplicationDbContext data;
         public MemesController(ApplicationDbContext data) => this.data = data;
+
+        [Authorize]
+        public IActionResult Mine()
+        {
+
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var myMemes = this.data
+                            .Posts
+                            .Where(m=>m.Memer.UserId==userId)
+                            .OrderByDescending(m => m.Id)
+                            .Select(m => new MemeListingViewModel
+                            {
+                                Id = m.Id,
+                                ImageUrl = m.ImageUrl,
+                                Description = m.Description,
+                                Date = m.Date,
+                                Likes = m.Likes,
+                                MemerId = m.MemerId
+                    // Comments = m.Comments
+                })
+                          .ToList();
+
+            return View(myMemes);
+
+        }
 
         [Authorize]
         public IActionResult Add()
@@ -26,7 +52,7 @@ namespace WhatDoYouMeme.Controllers
             if (!userIsMemer)
             {
 
-                return RedirectToAction(nameof(MemersController.Create),"Memers");
+                return RedirectToAction(nameof(MemersController.Create), "Memers");
             };
 
 
@@ -35,7 +61,7 @@ namespace WhatDoYouMeme.Controllers
 
         public IActionResult All()
         {
-           
+
             var memes = this.data
                 .Posts
                 .OrderByDescending(m => m.Id)
@@ -47,7 +73,7 @@ namespace WhatDoYouMeme.Controllers
                     Date = m.Date,
                     Likes = m.Likes,
                     MemerId = m.MemerId
-                   // Comments = m.Comments
+                    // Comments = m.Comments
                 })
               .ToList();
 
@@ -59,7 +85,7 @@ namespace WhatDoYouMeme.Controllers
         {
             var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var memerId = this.data.Memers.Where(m => m.UserId == userId).Select(m => m.Id).FirstOrDefault();
-            if (memerId==0)
+            if (memerId == 0)
             {
 
                 return RedirectToAction(nameof(MemersController.Create), "Memers");
@@ -73,7 +99,7 @@ namespace WhatDoYouMeme.Controllers
             {
                 ImageUrl = meme.ImageUrl,
                 Description = meme.Description,
-                Likes  = 0,
+                Likes = 0,
                 Date = DateTime.Now.ToString(CultureInfo.CurrentCulture),
                 Comments = new List<Comment>(),
                 MemerId = memerId

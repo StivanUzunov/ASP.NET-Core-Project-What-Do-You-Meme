@@ -1,0 +1,32 @@
+﻿@model IEnumerable<MemeListingViewModel>
+
+<div class="row">
+    @foreach (var meme in Model)
+    {
+        <div class="card offset-lg-2" style="width: 50rem; margin-bottom: 24px">
+            <img class="card-img-top" src="@meme.ImageUrl" alt="Meme">
+            <div class="card-body">
+                <p class="card-text">@meme.MemerId</p>
+                <p class="card-text">@meme.Description</p>
+                <p class="card-text">@meme.Date</p>
+            </div>
+            @*@if (meme.Comments.Any()) {
+                    <ul class="list-group list-group-flush">
+                        @foreach (var comment in meme.Comments)
+                        {
+                            <li>
+
+                                <p>@comment.CommentText</p>
+                                <a href="#" class="card-link">Like</a>
+                            </li>
+                        }
+                    </ul>
+                }*@
+            <div class="card-body">
+                <a href="#" class="card-link">Like</a>
+                <span>@meme.Likes total likes</span>
+            </div>
+        </div>
+    }
+
+</div>

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using WhatDoYouMeme.Infrastructure;
+using WhatDoYouMeme.Services;
 
 namespace WhatDoYouMeme
 {
@@ -37,6 +38,8 @@ namespace WhatDoYouMeme
                 {
                     options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
                 });
+
+            services.AddTransient<IMemerService, MemerService>();
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
