@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using WhatDoYouMeme.Infrastructure
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -21,9 +22,12 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Memes" asp-action="All">All Memes</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Memes" asp-action="Add">Add Meme</a>
-                        </li>
+                        @if (!User.IsAdmin())
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Memes" asp-action="Add">Add Meme</a>
+                            </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

@@ -1,14 +1,14 @@
-﻿@model AddMemeFormModel
+﻿@model EditMemeFormModel
 
 @{
-    ViewData["Title"] = "Add Meme";
+    ViewData["Title"] = "Edit Meme";
 
 
 }
 
 <div class="row">
     <div class="col-lg-6 offset-lg-1 col-sm-12">
-        <h1 class="heading-margin">Add Meme</h1>
+        <h1 class="heading-margin">Edit Meme</h1>
         <form method="post">
             <div class="form-group">
                 <label asp-for="ImageUrl">Image URL</label>
@@ -28,5 +28,5 @@
 
 @section Scripts
 {
-   <partial name="_ValidationScriptsPartial"/> 
+    <partial name="_ValidationScriptsPartial"/> 
 }

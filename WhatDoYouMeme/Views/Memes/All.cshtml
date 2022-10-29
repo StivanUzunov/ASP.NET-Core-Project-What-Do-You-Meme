@@ -5,9 +5,11 @@
 }
 
 
-@if (!Model.Any()) { 
+@if (!Model.Any())
+{
     <h1 class="text-center">No memes found at the moment.</h1>
 }
 
 
-<partial name="_MemesPartial" model="@Model"/>
+
+<partial name="_MemesPartial" model="@Model" />

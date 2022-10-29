@@ -3,24 +3,17 @@ using static WhatDoYouMeme.Data.DataConstants;
 
 namespace WhatDoYouMeme.Models.Memes
 {
-    public class AddMemeFormModel
+    public class EditMemeFormModel
     {
         [Required]
         [Url]
         [StringLength(ImgURLMaxLength)]
         public string ImageUrl { get; init; }
 
-        public string Date { get; init; }
-
         [Required]
         [StringLength(PostDescriptionMaxLength, MinimumLength = PostDescriptionMinLength)]
         public string Description { get; init; }
 
-        [Required]
-        public int Likes { get; init; }
-
-        [Required]
-        public string UserId { get; init; }
         [Required]
         public int MemerId { get; init; }
     }

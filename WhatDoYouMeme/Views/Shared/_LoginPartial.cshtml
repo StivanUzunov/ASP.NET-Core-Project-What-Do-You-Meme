@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using WhatDoYouMeme.Services
 @using System.Security.Claims
+@using WhatDoYouMeme.Infrastructure
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
 @inject IMemerService Memers
@@ -9,14 +10,15 @@
     @if (SignInManager.IsSignedIn(User))
             {
                 var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                var userIsMemer = Memers.IsMemer(userId); 
-     @if (userIsMemer)
+                var userIsMemer = Memers.IsMemer(userId);
+                var userIsAdmin = User.IsAdmin();
+     @if (userIsMemer && !userIsAdmin)
      {
          <li class="nav-item">
              <a class="nav-link text-dark" asp-area="" asp-controller="Memes" asp-action="Mine">My memes</a>
          </li>
      }
-     else
+     else if(!userIsAdmin)
      {
          <li class="nav-item">
              <a class="nav-link text-dark" asp-area="" asp-controller="Memers" asp-action="Create">Become a Memer!</a>

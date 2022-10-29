@@ -6,15 +6,24 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WhatDoYouMeme.Data;
+using WhatDoYouMeme.Services; 
 using WhatDoYouMeme.Data.Models;
+using WhatDoYouMeme.Infrastructure;
 using WhatDoYouMeme.Models.Memes;
+
 
 namespace WhatDoYouMeme.Controllers
 {
     public class MemesController : Controller
     {
         private readonly ApplicationDbContext data;
-        public MemesController(ApplicationDbContext data) => this.data = data;
+        private readonly IMemerService memers;
+
+        public MemesController(ApplicationDbContext data, IMemerService memers)
+        {
+            this.data = data;
+            this.memers = memers;
+        }
 
         [Authorize]
         public IActionResult Mine()
@@ -23,20 +32,20 @@ namespace WhatDoYouMeme.Controllers
             var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
             var myMemes = this.data
-                            .Posts
-                            .Where(m=>m.Memer.UserId==userId)
-                            .OrderByDescending(m => m.Id)
-                            .Select(m => new MemeListingViewModel
-                            {
-                                Id = m.Id,
-                                ImageUrl = m.ImageUrl,
-                                Description = m.Description,
-                                Date = m.Date,
-                                Likes = m.Likes,
-                                MemerId = m.MemerId
+                .Posts
+                .Where(m => m.Memer.UserId == userId)
+                .OrderByDescending(m => m.Id)
+                .Select(m => new MemeListingViewModel
+                {
+                    Id = m.Id,
+                    ImageUrl = m.ImageUrl,
+                    Description = m.Description,
+                    Date = m.Date,
+                    Likes = m.Likes,
+                    MemerId = m.MemerId
                     // Comments = m.Comments
                 })
-                          .ToList();
+                .ToList();
 
             return View(myMemes);
 
@@ -47,13 +56,14 @@ namespace WhatDoYouMeme.Controllers
         {
             var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var userIsMemer = this.data.Memers.Any(m => m.UserId == userId);
 
-            if (!userIsMemer)
+            if (!this.memers.IsMemer(userId))
             {
 
                 return RedirectToAction(nameof(MemersController.Create), "Memers");
-            };
+            }
+
+            ;
 
 
             return View(new AddMemeFormModel());
@@ -75,10 +85,11 @@ namespace WhatDoYouMeme.Controllers
                     MemerId = m.MemerId
                     // Comments = m.Comments
                 })
-              .ToList();
+                .ToList();
 
             return View(memes);
         }
+
         [HttpPost]
         [Authorize]
         public IActionResult Add(AddMemeFormModel meme)
@@ -90,6 +101,7 @@ namespace WhatDoYouMeme.Controllers
 
                 return RedirectToAction(nameof(MemersController.Create), "Memers");
             }
+
             if (!ModelState.IsValid)
             {
                 return View(meme);
@@ -102,13 +114,79 @@ namespace WhatDoYouMeme.Controllers
                 Likes = 0,
                 Date = DateTime.Now.ToString(CultureInfo.CurrentCulture),
                 Comments = new List<Comment>(),
-                MemerId = memerId
+                MemerId = meme.MemerId,
             };
 
             this.data.Posts.Add(memeData);
             this.data.SaveChanges();
 
             return RedirectToAction("Index", "Home");
+        }
+
+        [Authorize]
+        public IActionResult Edit(int id)
+        {
+            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var memerId = this.data.Memers.Where(m => m.UserId == userId).Select(m => m.Id).FirstOrDefault();
+            if (!memers.IsMemer(userId) && !User.IsAdmin())
+            {
+                return RedirectToAction(nameof(MemersController.Create), "Memers");
+            }
+
+            var meme = this.data
+                .Posts
+                .Where(m => m.Id == id)
+                .Select(m => new EditMemeFormModel
+                {
+                    ImageUrl = m.ImageUrl,
+                    Description = m.Description,
+
+                })
+                .FirstOrDefault();
+
+            if (meme.MemerId!=memerId&&!User.IsAdmin())
+            {
+                return Unauthorized();
+            }
+            return View(new EditMemeFormModel
+            {
+                ImageUrl = meme.ImageUrl,
+                Description = meme.Description,
+                MemerId = meme.MemerId
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult Edit(int id, EditMemeFormModel meme)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var memerId = this.data.Memers.Where(m => m.UserId == userId).Select(m => m.Id).FirstOrDefault();
+
+            var memeData = this.data.Posts.Where(m => m.Id == id).First();
+            if (memerId == 0 && !User.IsAdmin())
+            {
+
+                return RedirectToAction(nameof(MemersController.Create), "Memers");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(meme);
+            }
+
+            if (memeData.MemerId != memerId&&!User.IsAdmin())
+            {
+                return BadRequest();
+            }
+
+            memeData.ImageUrl = meme.ImageUrl;
+            memeData.Description = meme.Description;
+
+            this.data.SaveChanges();
+
+            return RedirectToAction(nameof(All));
+
         }
     }
 }
