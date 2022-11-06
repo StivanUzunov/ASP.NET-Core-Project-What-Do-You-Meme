@@ -34,6 +34,10 @@ namespace WhatDoYouMeme
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            services.AddAutoMapper(typeof(Startup));
+
+            services.AddMemoryCache();
+
             services
                 .AddControllersWithViews(options =>
                 {
@@ -64,6 +68,7 @@ namespace WhatDoYouMeme
                 .UseAuthorization()
                 .UseEndpoints(endpoints =>
             {
+                endpoints.MapDefaultAreaRoute();
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapRazorPages();
             });

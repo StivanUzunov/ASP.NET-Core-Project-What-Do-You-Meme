@@ -1,5 +1,5 @@
 ﻿using System.Security.Claims;
-using static WhatDoYouMeme.WebConstants;
+using static WhatDoYouMeme.Areas.Admin.AdminConstants;
 namespace WhatDoYouMeme.Infrastructure
 {
     public static class ClaimsPrincipalExtensions

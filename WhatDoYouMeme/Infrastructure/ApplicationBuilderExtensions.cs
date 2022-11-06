@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using WhatDoYouMeme.Data;
-using static WhatDoYouMeme.WebConstants;
+using static WhatDoYouMeme.Areas.Admin.AdminConstants;
 
 namespace WhatDoYouMeme.Infrastructure
 {

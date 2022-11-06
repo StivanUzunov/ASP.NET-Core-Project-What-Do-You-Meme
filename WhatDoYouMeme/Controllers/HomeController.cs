@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.CodeAnalysis.Operations;
+using Microsoft.Extensions.Caching.Memory;
 using WhatDoYouMeme.Data;
 using WhatDoYouMeme.Data.Models;
 using WhatDoYouMeme.Models;
@@ -14,31 +16,49 @@ namespace WhatDoYouMeme.Controllers
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext data;
-        public HomeController(ApplicationDbContext data) => this.data = data;
+        private readonly IMemoryCache cache;
+
+        public HomeController(ApplicationDbContext data, IMemoryCache cache)
+        {
+            this.data = data;
+            this.cache = cache;
+        } 
  
         public IActionResult Index()
         {
-            var totalMemes = this.data.Posts.Count();
+            const string latestMemesCacheKey = "latestMemesCacheKey";
+
+            var latestMemes = this.cache.Get<List<MemeListingViewModel>>(latestMemesCacheKey);
+            if (latestMemes == null)
+            {
+                 latestMemes = this.data
+                    .Posts
+                    .OrderByDescending(m => m.Id)
+                    .Select(m => new MemeListingViewModel
+                    {
+                        Id = m.Id,
+                        ImageUrl = m.ImageUrl,
+                        Description = m.Description,
+                        Date = m.Date,
+                        Likes = m.Likes
+                    })
+                    .Take(3)
+                    .ToList();
+
+                 var cacheOptions = new MemoryCacheEntryOptions()
+                     .SetAbsoluteExpiration(TimeSpan.FromMinutes(15));
+
+                 this.cache.Set(latestMemesCacheKey, latestMemes, cacheOptions);
+            }
+                var totalMemes = this.data.Posts.Count();
             var totalUsers = this.data.Users.Count();
-            var memes = this.data
-                .Posts
-                .OrderByDescending(m => m.Id)
-                .Select(m => new MemeListingViewModel
-                {
-                    Id = m.Id,
-                    ImageUrl = m.ImageUrl,
-                    Description = m.Description,
-                    Date = m.Date,
-                    Likes = m.Likes
-                })
-                .Take(3)
-                .ToList();
+            
 
             return View(new IndexViewModel
             {
                 TotalMemes = totalMemes,
                 TotalUsers = totalUsers,
-                Posts = memes
+                Posts = latestMemes
             });
         }
 

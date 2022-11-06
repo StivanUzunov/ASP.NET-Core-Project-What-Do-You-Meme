@@ -61,9 +61,7 @@ namespace WhatDoYouMeme.Controllers
             {
 
                 return RedirectToAction(nameof(MemersController.Create), "Memers");
-            }
-
-            ;
+            };
 
 
             return View(new AddMemeFormModel());
