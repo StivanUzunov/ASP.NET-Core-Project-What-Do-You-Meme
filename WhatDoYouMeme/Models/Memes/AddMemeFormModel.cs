@@ -18,9 +18,6 @@ namespace WhatDoYouMeme.Models.Memes
 
         [Required]
         public int Likes { get; init; }
-
-        [Required]
-        public string UserId { get; init; }
         [Required]
         public int MemerId { get; init; }
     }

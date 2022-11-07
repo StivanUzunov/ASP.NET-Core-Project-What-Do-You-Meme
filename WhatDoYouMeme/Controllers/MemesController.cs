@@ -10,7 +10,7 @@ using WhatDoYouMeme.Services;
 using WhatDoYouMeme.Data.Models;
 using WhatDoYouMeme.Infrastructure;
 using WhatDoYouMeme.Models.Memes;
-
+using static WhatDoYouMeme.WebConstants;
 
 namespace WhatDoYouMeme.Controllers
 {
@@ -30,6 +30,7 @@ namespace WhatDoYouMeme.Controllers
         {
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            
 
             var myMemes = this.data
                 .Posts
@@ -42,8 +43,9 @@ namespace WhatDoYouMeme.Controllers
                     Description = m.Description,
                     Date = m.Date,
                     Likes = m.Likes,
-                    MemerId = m.MemerId
-                    // Comments = m.Comments
+                    MemerId = m.MemerId,
+                    MemerName = m.Memer.Name,
+                    Comments = m.Comments.ToList()
                 })
                 .ToList();
 
@@ -80,8 +82,9 @@ namespace WhatDoYouMeme.Controllers
                     Description = m.Description,
                     Date = m.Date,
                     Likes = m.Likes,
-                    MemerId = m.MemerId
-                    // Comments = m.Comments
+                    MemerId = m.MemerId,
+                    MemerName = m.Memer.Name,
+                    Comments = m.Comments.ToList()
                 })
                 .ToList();
 
@@ -94,6 +97,7 @@ namespace WhatDoYouMeme.Controllers
         {
             var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var memerId = this.data.Memers.Where(m => m.UserId == userId).Select(m => m.Id).FirstOrDefault();
+
             if (memerId == 0)
             {
 
@@ -112,11 +116,13 @@ namespace WhatDoYouMeme.Controllers
                 Likes = 0,
                 Date = DateTime.Now.ToString(CultureInfo.CurrentCulture),
                 Comments = new List<Comment>(),
-                MemerId = meme.MemerId,
+                MemerId = memerId,
             };
 
             this.data.Posts.Add(memeData);
             this.data.SaveChanges();
+
+            TempData[GlobalMessageKey] = "Your Meme was added successfully!";
 
             return RedirectToAction("Index", "Home");
         }
@@ -138,7 +144,7 @@ namespace WhatDoYouMeme.Controllers
                 {
                     ImageUrl = m.ImageUrl,
                     Description = m.Description,
-
+                    MemerId = m.MemerId
                 })
                 .FirstOrDefault();
 
@@ -146,6 +152,7 @@ namespace WhatDoYouMeme.Controllers
             {
                 return Unauthorized();
             }
+
             return View(new EditMemeFormModel
             {
                 ImageUrl = meme.ImageUrl,
@@ -182,6 +189,8 @@ namespace WhatDoYouMeme.Controllers
             memeData.Description = meme.Description;
 
             this.data.SaveChanges();
+
+            TempData[GlobalMessageKey] = "Your Meme was edited successfully!";
 
             return RedirectToAction(nameof(All));
 

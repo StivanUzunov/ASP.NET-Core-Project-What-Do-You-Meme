@@ -13,7 +13,8 @@ namespace WhatDoYouMeme.Models.Memes
         public string Description { get; init; }
         public int Likes { get; init; }
         public int MemerId { get; set; }
-        public IEnumerable<Comment> Comments { get; init; }
+        public string MemerName { get; set; }
+        public List<Comment> Comments { get; init; }
 
     }
 }

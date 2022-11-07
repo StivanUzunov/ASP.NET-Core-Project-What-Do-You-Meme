@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 using WhatDoYouMeme.Data;
 using WhatDoYouMeme.Data.Models;
 using WhatDoYouMeme.Models.Memers;
-
+using static WhatDoYouMeme.WebConstants;
 namespace WhatDoYouMeme.Controllers
 {
     public class MemersController:Controller
@@ -46,6 +46,8 @@ namespace WhatDoYouMeme.Controllers
 
             this.data.Memers.Add(memerData);
             this.data.SaveChanges();
+
+            TempData[GlobalMessageKey] = "Thank you for becoming a Memer!";
 
             return RedirectToAction("All", "Memes");
         }

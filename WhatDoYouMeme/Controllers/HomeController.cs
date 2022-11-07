@@ -50,7 +50,7 @@ namespace WhatDoYouMeme.Controllers
 
                  this.cache.Set(latestMemesCacheKey, latestMemes, cacheOptions);
             }
-                var totalMemes = this.data.Posts.Count();
+            var totalMemes = this.data.Posts.Count();
             var totalUsers = this.data.Users.Count();
             
 
