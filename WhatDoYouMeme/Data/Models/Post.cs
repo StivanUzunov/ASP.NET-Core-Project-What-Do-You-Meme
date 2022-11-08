@@ -6,7 +6,6 @@ namespace WhatDoYouMeme.Data.Models
     public class Post
     {
         public int Id { get; init; }
-
         [Required]
         [MaxLength(ImgURLMaxLength)]
         public string ImageUrl { get; set; }
@@ -18,6 +17,7 @@ namespace WhatDoYouMeme.Data.Models
         public string Description { get; set; }
         [Required]
         public int Likes { get; set; }
+        public bool isPublic { get; set; }
         public int MemerId { get; init; }
         public Memer Memer { get; init; }
         public IEnumerable<Comment> Comments { get; set; } = new List<Comment>();

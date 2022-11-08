@@ -53,6 +53,27 @@ namespace WhatDoYouMeme.Controllers
 
         }
 
+        public IActionResult Details(int id)
+        {
+            var memeData = this.data.
+                Posts.
+                Where(m => m.Id == id)
+                .Select(m => new MemeListingViewModel
+            {
+                Id = m.Id,
+                ImageUrl = m.ImageUrl,
+                Description = m.Description,
+                Date = m.Date,
+                Likes = m.Likes,
+                MemerId = m.MemerId,
+                MemerName = m.Memer.Name,
+                Comments = m.Comments.ToList()
+            }).FirstOrDefault();               
+
+
+            return View(memeData);
+        }
+
         [Authorize]
         public IActionResult Add()
         {
@@ -74,6 +95,7 @@ namespace WhatDoYouMeme.Controllers
 
             var memes = this.data
                 .Posts
+                .Where(m=>m.isPublic)
                 .OrderByDescending(m => m.Id)
                 .Select(m => new MemeListingViewModel
                 {
@@ -117,14 +139,15 @@ namespace WhatDoYouMeme.Controllers
                 Date = DateTime.Now.ToString(CultureInfo.CurrentCulture),
                 Comments = new List<Comment>(),
                 MemerId = memerId,
+                isPublic = false
             };
 
             this.data.Posts.Add(memeData);
             this.data.SaveChanges();
 
-            TempData[GlobalMessageKey] = "Your Meme was added successfully!";
+            TempData[GlobalMessageKey] = "Your Meme was added successfully and it is waiting for approval!";
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction(nameof(Details), memeData.Id);
         }
 
         [Authorize]
@@ -187,10 +210,11 @@ namespace WhatDoYouMeme.Controllers
 
             memeData.ImageUrl = meme.ImageUrl;
             memeData.Description = meme.Description;
+            memeData.isPublic = false;
 
             this.data.SaveChanges();
 
-            TempData[GlobalMessageKey] = "Your Meme was edited successfully!";
+            TempData[GlobalMessageKey] = "Your Meme was edited successfully and it is waiting for approval!";
 
             return RedirectToAction(nameof(All));
 

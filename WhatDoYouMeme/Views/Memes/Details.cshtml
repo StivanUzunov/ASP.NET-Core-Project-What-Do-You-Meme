@@ -1,0 +1,44 @@
+﻿@model MemeListingViewModel
+
+@{
+    ViewBag.Title = "Meme";
+}
+
+
+<div class="row">
+   
+    
+        <div class="card offset-lg-2" style="width: 50rem; margin-bottom: 24px">
+            <img class="card-img-top" src="@Model.ImageUrl" alt="Meme">
+            <div class="card-body">
+                <h4>Memer:</h4>
+                <p class="card-text">@Model.MemerName</p>
+                <h4>Description:</h4>
+                <p class="card-text">@Model.Description</p>
+                <h4>Date published:</h4>
+                <p class="card-text">@Model.Date</p>
+            </div>
+            <div class="card-body">
+                <a href="#" class="card-link">Like</a>
+                <span>@Model.Likes total likes</span> <br />
+            </div>
+            @if (Model.Comments.Any())
+            {
+           
+                <div>
+                    <ul  style="width: 50rem; margin-bottom: 24px">
+                        <h4>Comments:</h4>
+                        @foreach (var comment in Model.Comments)
+                        {
+                            <li>
+
+                                @comment.CommentText<br>
+                                <span>@comment.Likes total likes</span>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+        </div>
+
+</div>

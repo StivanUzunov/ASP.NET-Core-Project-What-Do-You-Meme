@@ -33,6 +33,7 @@ namespace WhatDoYouMeme.Controllers
             {
                  latestMemes = this.data
                     .Posts
+                    .Where(m=>m.isPublic)
                     .OrderByDescending(m => m.Id)
                     .Select(m => new MemeListingViewModel
                     {
@@ -50,7 +51,7 @@ namespace WhatDoYouMeme.Controllers
 
                  this.cache.Set(latestMemesCacheKey, latestMemes, cacheOptions);
             }
-            var totalMemes = this.data.Posts.Count();
+            var totalMemes = this.data.Posts.Count(m=>m.isPublic);
             var totalUsers = this.data.Users.Count();
             
 

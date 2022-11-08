@@ -17,30 +17,14 @@
         <div class="card-body">
             <a href="#" class="card-link">Like</a>
             <span>@meme.Likes total likes</span> <br>
+            <a asp-controller="Memes" asp-action="Details" asp-route-id="@meme.Id" class="btn btn btn-primary">Details</a>
             @if (ViewBag.AllowMemeEdit == true || User.IsAdmin())
             {
                 <a asp-controller="Memes" asp-action="Edit" asp-route-id="@meme.Id" class="btn btn-warning">Edit</a>
                 <a asp-controller="Memes" asp-action="Delete" asp-route-id="@meme.Id" class="btn btn-danger">Delete</a>
             }
         </div>
-        @if (meme.Comments.Any())
-        {
-           
-            <div>
-                <ul  style="width: 50rem; margin-bottom: 24px">
-                    <h4>Comments:</h4>
-                    @foreach (var comment in meme.Comments)
-                    {
-                        <li>
-
-                            @comment.CommentText<br>
-                            <span>@comment.Likes total likes</span>
-                        </li>
-                    }
-                </ul>
-            </div>
-           
-        }
+       
     </div>
     }
 
