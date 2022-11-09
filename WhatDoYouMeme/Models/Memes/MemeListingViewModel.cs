@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore.Design;
 using WhatDoYouMeme.Data.Models;
 
 namespace WhatDoYouMeme.Models.Memes

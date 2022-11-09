@@ -32,6 +32,7 @@ namespace WhatDoYouMeme.Data
                 .HasForeignKey(m => m.MemerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+
             base.OnModelCreating(builder);
         }
     }

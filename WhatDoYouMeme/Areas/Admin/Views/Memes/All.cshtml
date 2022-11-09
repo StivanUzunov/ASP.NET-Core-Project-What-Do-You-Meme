@@ -1,0 +1,46 @@
+﻿@model IEnumerable<MemeListingViewModel>
+
+@{
+    ViewData["Title"] = "Administration";
+}
+
+@if (!Model.Any())
+{
+    <h1>No Memes for approval! :)</h1>
+}
+else
+{
+    <table class="table table-striped"  border="1">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Image-Url</th>
+            <th scope="col">Date</th>
+            <th scope="col">Description</th>
+            <th scope="col">Memer</th>
+            <th scope="col">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var meme in Model)
+        {
+            <tr>
+                <td scope="col">@meme.Id</td>
+                <td scope="col">
+                    <img class="card-img-top" src="@meme.ImageUrl" alt="MemeURL">
+                </td>
+                <td scope="col">@meme.Date</td>
+                <td scope="col">@meme.Description</td>
+                <td scope="col">@meme.MemerName</td>
+                <td scope="col">
+                    <a style="margin: 12px" asp-area="" asp-controller="Memes" asp-action="Edit" asp-route-id="@meme.Id" class="btn btn-warning">Edit</a> <br>
+                    <a style="margin: 12px" asp-area="" asp-controller="Memes" asp-action="Delete" asp-route-id="@meme.Id" class="btn btn-danger">Delete</a> <br>
+                    <a style="margin: 12px" asp-area="" asp-controller="Memes" asp-action="MakePublic" asp-route-id="@meme.Id" class="btn btn-primary">Make Public</a>
+                </td>
+           
+            </tr>
+        }
+        </tbody>
+    </table>
+
+}

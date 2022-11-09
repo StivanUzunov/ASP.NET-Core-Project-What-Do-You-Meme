@@ -106,7 +106,8 @@ namespace WhatDoYouMeme.Controllers
                     Likes = m.Likes,
                     MemerId = m.MemerId,
                     MemerName = m.Memer.Name,
-                    Comments = m.Comments.ToList()
+                    Comments = m.Comments.ToList(),
+                   
                 })
                 .ToList();
 
@@ -139,7 +140,8 @@ namespace WhatDoYouMeme.Controllers
                 Date = DateTime.Now.ToString(CultureInfo.CurrentCulture),
                 Comments = new List<Comment>(),
                 MemerId = memerId,
-                isPublic = false
+                isPublic = false,
+
             };
 
             this.data.Posts.Add(memeData);
@@ -217,6 +219,46 @@ namespace WhatDoYouMeme.Controllers
             TempData[GlobalMessageKey] = "Your Meme was edited successfully and it is waiting for approval!";
 
             return RedirectToAction(nameof(All));
+
+        }
+
+        public IActionResult MakePublic(int id)
+        {
+            var memeData = this.data.Posts.Where(m => m.Id == id).First();
+
+            memeData.isPublic = true;
+
+            this.data.SaveChanges();
+
+            TempData[GlobalMessageKey] = "This meme was approved successfully!";
+
+            var url = Url.RouteUrl("areas", new { controller = "Memes", action = "All", area = "Admin" });
+            return Redirect(url);
+        }
+
+        [Authorize]
+        public IActionResult Delete(int id)
+        {
+            var meme = this.data.Posts.Where(m => m.Id == id).First();
+
+            this.data.Remove(meme);
+
+            this.data.SaveChanges();
+
+            return RedirectToAction(nameof(All));
+        }
+
+        [Authorize]
+        public IActionResult Like(int id)
+        {
+            var meme = this.data.Posts.Where(m => m.Id == id).First();
+
+            meme.Likes++;
+           
+
+            this.data.            SaveChanges();
+
+            return RedirectToAction(nameof(All), "Memes", $"{id}");
 
         }
     }
