@@ -30,19 +30,19 @@
     <div class="carousel-inner" >
         @if (firstMeme != null)
         {
-            <div class="carousel-item active" style="max-height: 700px; min-height: 600px; object-fit: cover ">
+            <div class="carousel-item active" style=" object-fit: cover ">
                 <img class="d-block w-100" src="@firstMeme.ImageUrl" alt="First meme">
             </div>
         }
         @if (secondMeme != null)
         {
-            <div class="carousel-item" style="max-height: 700px; min-height: 600px; object-fit: cover">
+            <div class="carousel-item" style=" object-fit: cover">
                 <img class="d-block w-100" src="@secondMeme.ImageUrl" alt="Second meme">
             </div>
         }
       @if (thirdMeme != null)
       {
-          <div class="carousel-item" style="max-height: 700px; min-height: 600px; object-fit: cover">
+          <div class="carousel-item" style=" object-fit: cover">
               <img class="d-block w-100" src="@thirdMeme.ImageUrl" alt="Third meme">
           </div>
       }

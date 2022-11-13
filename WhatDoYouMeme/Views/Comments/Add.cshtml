@@ -1,0 +1,24 @@
+﻿@model AddCommentFormModel
+
+@{
+    ViewData["Title"] = "Add Comment";
+}
+
+<div class="row">
+    <div class="col-lg-6 offset-lg-1 col-sm-12">
+        <h1 class="heading-margin">Add comment</h1>
+        <form method="post">
+            <div class="form-group">
+                <label asp-for="CommentText">Comment</label>
+                <input class="form-control" asp-for="CommentText" placeholder="Your comment">
+                <span asp-validation-for="CommentText" class="small text-danger"></span>
+            </div>
+            <input class="btn btn-primary float-right" type="submit" value="Add comment" />
+        </form>
+    </div>
+</div>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial"/> 
+}

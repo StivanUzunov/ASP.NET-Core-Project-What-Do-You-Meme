@@ -9,5 +9,11 @@ namespace WhatDoYouMeme.Infrastructure
             => endpoints.MapControllerRoute(
                 name: "Areas",
                 pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+        public static void MapControllerRoute(this IEndpointRouteBuilder endpoints)
+            => endpoints.MapControllerRoute(
+            name: "Details",
+            pattern: "/{controller=Memes}/{action=Details}/{id}"
+                );
     }
 }

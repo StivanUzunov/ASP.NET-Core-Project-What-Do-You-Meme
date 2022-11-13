@@ -67,7 +67,7 @@ namespace WhatDoYouMeme.Controllers
                 Likes = m.Likes,
                 MemerId = m.MemerId,
                 MemerName = m.Memer.Name,
-                Comments = m.Comments.ToList()
+                Comments = m.Comments.OrderByDescending(l => l.Likes).ToList()
             }).FirstOrDefault();               
 
 
@@ -106,8 +106,7 @@ namespace WhatDoYouMeme.Controllers
                     Likes = m.Likes,
                     MemerId = m.MemerId,
                     MemerName = m.Memer.Name,
-                    Comments = m.Comments.ToList(),
-                   
+                    Comments = m.Comments.OrderByDescending(c=>c.Id).Take(3).ToList(),
                 })
                 .ToList();
 

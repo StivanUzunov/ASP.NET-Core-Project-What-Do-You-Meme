@@ -1,4 +1,6 @@
-﻿@model MemeListingViewModel
+﻿@using WhatDoYouMeme.Data.Models
+@using WhatDoYouMeme.Infrastructure
+@model MemeListingViewModel
 
 @{
     ViewBag.Title = "Meme";
@@ -30,15 +32,22 @@
                         <h4>Comments:</h4>
                         @foreach (var comment in Model.Comments)
                         {
-                            <li>
+                    <li>
 
-                                @comment.CommentText<br>
-                                <span>@comment.Likes total likes</span>
-                            </li>
+                        @comment.CommentText<br>
+                        <a asp-controller="Comments" asp-action="Like" asp-route-id="@comment.Id" class="btn">Like</a>
+                        <span>@comment.Likes total likes</span>
+
+                        @if (User.IsAdmin())
+                        {
+                            <a asp-controller="Comments" asp-action="Delete" asp-route-id="@comment.Id" class="btn">Delete</a>
+                        }
+                    </li>
                         }
                     </ul>
                 </div>
             }
+            <a asp-controller="Comments" asp-action="Add" asp-route-id="@Model.Id" class="btn">Add comment</a>
         </div>
 
 </div>

@@ -10,13 +10,16 @@ namespace WhatDoYouMeme.Data.Models
         [Required]
         [MaxLength(CommentMaxLength)]
         public string CommentText { get; set; }
-
+        [Required]
+        public string Date { get; set; }
         [Required]
         public int Likes { get; set; }
-
         [Required]
         public int PostId { get; set; }
         [Required]
         public Post Post { get; set; }
+        public int MemerId { get; init; }
+        public Memer Memer { get; init; }
+        public string MemerName { get; set; }
     }
 }
