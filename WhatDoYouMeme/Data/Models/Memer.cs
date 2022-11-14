@@ -23,5 +23,6 @@ namespace WhatDoYouMeme.Data.Models
         public IEnumerable<Post> Posts { get; init; } = new List<Post>();
 
         public IEnumerable<Comment> Comments { get; init; } = new List<Comment>();
+        public IEnumerable<Issues> Issues { get; init; } = new List<Issues>();
     }
 }

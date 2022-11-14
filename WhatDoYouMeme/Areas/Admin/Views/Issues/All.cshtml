@@ -1,0 +1,44 @@
+﻿@model IEnumerable<IssueListingViewModel>
+
+@{
+    ViewData["Title"] = "Issues";
+}
+
+@if (!Model.Any())
+{
+    <h1>No issues for reviewing! :)</h1>
+}
+else
+{
+    <table class="table table-striped"  border="1">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Title</th>
+                <th scope="col">Date</th>
+                <th scope="col">Description</th>
+                <th scope="col">Memer Id</th>
+                <th scope="col">Memer Name</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var issue in Model)
+        {
+            <tr>
+                <td scope="col">@issue.Id</td>
+                <td scope="col">@issue.Title</td>
+                <td scope="col">@issue.Date</td>
+                <td scope="col">@issue.Description</td>
+                <td scope="col">@issue.MemerId</td>
+                <td scope="col">@issue.MemerName</td>
+                <td scope="col">
+                    <a style="margin: 12px" asp-area="" asp-controller="Issues" asp-action="IsReviewed" asp-route-id="@issue.Id" class="btn btn-primary">Mark as viewed</a>
+                </td>
+
+            </tr>
+        }
+        </tbody>
+    </table>
+
+}

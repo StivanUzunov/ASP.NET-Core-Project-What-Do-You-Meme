@@ -10,7 +10,7 @@ namespace WhatDoYouMeme.Data
         public DbSet<Post> Posts { get; init; }
         public DbSet<Comment> Comments { get; init; }
         public DbSet<Memer> Memers { get; init; }
-
+        public DbSet<Issues> Issues { get; init; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -32,6 +32,11 @@ namespace WhatDoYouMeme.Data
                 .HasForeignKey(m => m.MemerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder.Entity<Memer>()
+                .HasMany(i => i.Issues)
+                .WithOne(m => m.Memer)
+                .HasForeignKey(m => m.MemerId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             base.OnModelCreating(builder);
         }
