@@ -1,0 +1,16 @@
+﻿@model IEnumerable<VideoListingViewModel>
+
+
+@{
+    ViewBag.Title = "My videos";
+    ViewBag.AllowVideoEdit = true;
+    ViewBag.AllowVideoDelete = true;
+}
+
+@if (!Model.Any())
+{
+    <h1 class="text-center">You do not have any videos yet!</h1>
+    <button type="button" class="btn btn-primary btn-lg" style="text-align: center; margin-top: 40px; position: center" onclick="location.href='@Url.Action("Add","Videos")'">Add video</button>
+}
+
+<partial name="_VideosPartial" model="@Model" />

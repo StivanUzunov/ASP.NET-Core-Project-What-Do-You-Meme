@@ -1,0 +1,48 @@
+﻿@model IEnumerable<VideoListingViewModel>
+
+@{
+    ViewData["Title"] = "Administration";
+}
+
+@if (!Model.Any())
+{
+    <h1>No Videos for approval! :)</h1>
+}
+else
+{
+    <table class="table table-striped"  border="1">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Video-Url</th>
+                <th scope="col">Date</th>
+                <th scope="col">Title</th>
+                <th scope="col">Description</th>
+                <th scope="col">Memer</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var video in Model)
+        {
+            <tr>
+                <td scope="col">@video.Id</td>
+                <td scope="col" width="400px">
+                    <iframe src="@video.VideoUrl" class="card-img-top" alt="Video URL" height="300px"> </iframe>
+                </td>
+                <td scope="col">@video.Date</td>
+                <td scope="col">@video.Title</td>
+                <td scope="col">@video.Description</td>
+                <td scope="col">@video.MemerName</td>
+                <td scope="col">
+                    <a style="margin: 12px" asp-area="" asp-controller="Videos" asp-action="Edit" asp-route-id="@video.Id" class="btn btn-warning">Edit</a> <br>
+                    <a style="margin: 12px" asp-area="" asp-controller="Videos" asp-action="Delete" asp-route-id="@video.Id" class="btn btn-danger">Delete</a> <br>
+                    <a style="margin: 12px" asp-area="" asp-controller="Videos" asp-action="MakePublic" asp-route-id="@video.Id" class="btn btn-primary">Make Public</a>
+                </td>
+
+            </tr>
+        }
+        </tbody>
+    </table>
+
+}

@@ -24,5 +24,6 @@ namespace WhatDoYouMeme.Data.Models
 
         public IEnumerable<Comment> Comments { get; init; } = new List<Comment>();
         public IEnumerable<Issues> Issues { get; init; } = new List<Issues>();
+        public IEnumerable<Video> Videos { get; init; } = new List<Video>();
     }
 }

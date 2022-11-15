@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WhatDoYouMeme.Data;
 
 namespace WhatDoYouMeme.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221115175422_AddedVideosTable")]
+    partial class AddedVideosTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -238,16 +240,16 @@ namespace WhatDoYouMeme.Data.Migrations
                     b.Property<int>("Likes")
                         .HasColumnType("int");
 
-                    b.Property<int?>("MemerId")
+                    b.Property<int>("MemerId")
                         .HasColumnType("int");
 
                     b.Property<string>("MemerName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PostId")
+                    b.Property<int>("PostId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("VideoId")
+                    b.Property<int>("VideoId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -458,15 +460,21 @@ namespace WhatDoYouMeme.Data.Migrations
                 {
                     b.HasOne("WhatDoYouMeme.Data.Models.Memer", "Memer")
                         .WithMany("Comments")
-                        .HasForeignKey("MemerId");
+                        .HasForeignKey("MemerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("WhatDoYouMeme.Data.Models.Post", "Post")
                         .WithMany("Comments")
-                        .HasForeignKey("PostId");
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("WhatDoYouMeme.Data.Models.Video", "Video")
                         .WithMany("Comments")
-                        .HasForeignKey("VideoId");
+                        .HasForeignKey("VideoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Memer");
 

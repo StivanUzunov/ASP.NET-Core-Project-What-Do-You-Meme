@@ -14,12 +14,13 @@ namespace WhatDoYouMeme.Data.Models
         public string Date { get; set; }
         [Required]
         public int Likes { get; set; }
-        [Required]
-        public int PostId { get; set; }
-        [Required]
+        public int? PostId { get; set; }
         public Post Post { get; set; }
-        public int MemerId { get; init; }
+        public int? MemerId { get; init; }
         public Memer Memer { get; init; }
         public string MemerName { get; set; }
+        public int? VideoId { get; init; }
+        public Video Video { get; set; }
+       
     }
 }

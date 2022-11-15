@@ -52,12 +52,14 @@ namespace WhatDoYouMeme.Controllers
                  this.cache.Set(latestMemesCacheKey, latestMemes, cacheOptions);
             }
             var totalMemes = this.data.Posts.Count(m=>m.isPublic);
+            var totalVideos = this.data.Videos.Count(m=>m.IsPublic);
             var totalUsers = this.data.Users.Count();
             
 
             return View(new IndexViewModel
             {
                 TotalMemes = totalMemes,
+                TotalVideos = totalVideos,
                 TotalUsers = totalUsers,
                 Posts = latestMemes
             });

@@ -11,6 +11,7 @@ namespace WhatDoYouMeme.Data
         public DbSet<Comment> Comments { get; init; }
         public DbSet<Memer> Memers { get; init; }
         public DbSet<Issues> Issues { get; init; }
+        public DbSet<Video> Videos { get; init; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -35,6 +36,12 @@ namespace WhatDoYouMeme.Data
             builder.Entity<Memer>()
                 .HasMany(i => i.Issues)
                 .WithOne(m => m.Memer)
+                .HasForeignKey(m => m.MemerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Video>()
+                .HasOne(p => p.Memer)
+                .WithMany(m => m.Videos)
                 .HasForeignKey(m => m.MemerId)
                 .OnDelete(DeleteBehavior.Restrict);
 

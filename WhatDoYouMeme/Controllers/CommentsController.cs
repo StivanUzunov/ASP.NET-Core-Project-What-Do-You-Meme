@@ -40,7 +40,6 @@ namespace WhatDoYouMeme.Controllers
             return View(new AddCommentFormModel());
         }
 
-
         [HttpPost]
         [Authorize]
         public IActionResult Add(int id,AddCommentFormModel comment)
@@ -77,7 +76,7 @@ namespace WhatDoYouMeme.Controllers
 
             return RedirectToAction(nameof(MemesController.Details), "Memes", new {id});
         }
-
+        [Authorize]
         public IActionResult Delete(int id)
         {
             var comment = this.data.Comments.Where(m => m.Id == id).First();
@@ -105,6 +104,89 @@ namespace WhatDoYouMeme.Controllers
             this.data.SaveChanges();
 
             return RedirectToAction(nameof(MemesController.Details), "Memes", new { id = postId });
+        }
+
+
+        [Authorize]
+        public IActionResult AddToVideo()
+        {
+            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+
+            if (!this.memers.IsMemer(userId))
+            {
+
+                return RedirectToAction(nameof(MemersController.Create), "Memers");
+            };
+
+
+            return View(new AddCommentFormModelVideo());
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult AddToVideo(int id, AddCommentFormModelVideo comment)
+        {
+            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var memerId = this.data.Memers.Where(m => m.UserId == userId).Select(m => m.Id).FirstOrDefault();
+            var memerName = this.data.Memers.Where(m => m.UserId == userId).Select(n => n.Name).FirstOrDefault();
+
+            if (memerId == 0)
+            {
+
+                return RedirectToAction(nameof(MemersController.Create), "Memers");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(comment);
+            }
+
+            var commentData = new Comment
+            {
+                CommentText = comment.CommentText,
+                Likes = 0,
+                Date = DateTime.Now.ToString(CultureInfo.CurrentCulture),
+                MemerId = memerId,
+                VideoId = id,
+                MemerName = memerName
+            };
+
+            this.data.Comments.Add(commentData);
+            this.data.SaveChanges();
+
+            TempData[GlobalMessageKey] = "Your comment was added successfully!";
+
+            return RedirectToAction(nameof(VideosController.Details), "Videos", new { id });
+        }
+
+        public IActionResult DeleteOfVideo(int id)
+        {
+            var comment = this.data.Comments.Where(m => m.Id == id).First();
+
+            var videoId = this.data.Videos.Where(p => p.Comments.Contains(comment)).Select(i => i.Id).First();
+
+            this.data.Remove(comment);
+
+            this.data.SaveChanges();
+
+            TempData[GlobalMessageKey] = "The comment was deleted successfully!";
+
+            return RedirectToAction(nameof(VideosController.Details), "Videos", new { id = videoId });
+        }
+
+        [Authorize]
+        public IActionResult LikeofVideo(int id)
+        {
+            var comment = this.data.Comments.Where(m => m.Id == id).First();
+
+            var videoId = this.data.Videos.Where(p => p.Comments.Contains(comment)).Select(i => i.Id).First();
+
+            comment.Likes++;
+
+            this.data.SaveChanges();
+
+            return RedirectToAction(nameof(VideosController.Details), "Videos", new { id = videoId });
         }
     }
 }

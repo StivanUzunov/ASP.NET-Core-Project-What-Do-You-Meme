@@ -1,0 +1,52 @@
+﻿@using WhatDoYouMeme.Infrastructure
+@model VideoListingViewModel
+
+@{
+    ViewBag.Title = "Video";
+}
+
+
+<div class="row">
+    <div class="card offset-lg-2" style=" width: 800px; margin-bottom: 24px">
+        <iframe src="@Model.VideoUrl" class="card-img-top" alt="Video URL" height="400px"> </iframe>
+        <div class="card-body">
+            <h4>Memer:</h4>
+            <p class="card-text">@Model.MemerName</p>
+            <h4>Title:</h4>
+            <p class="card-text">@Model.Title</p>
+            <h4>Description:</h4>
+            <p class="card-text">@Model.Description</p>
+            <h4>Date published:</h4>
+            <p class="card-text">@Model.Date</p>
+        </div>
+        <div class="card-body">
+            <a href="#" class="card-link">Like</a>
+            <span>@Model.Likes total likes</span> <br />
+        </div>
+        @if (Model.Comments.Any())
+        {
+
+            <div>
+                <ul style=" margin-bottom: 24px">
+                    <h4>Comments:</h4>
+                    @foreach (var comment in Model.Comments)
+                    {
+                        <li>
+
+                            @comment.CommentText<br>
+                            <a asp-controller="Comments" asp-action="LikeOfVideo" asp-route-id="@comment.Id" class="btn">Like</a>
+                            <span>@comment.Likes total likes</span>
+
+                            @if (User.IsAdmin())
+                            {
+                                <a asp-controller="Comments" asp-action="DeleteOfVideo" asp-route-id="@comment.Id" class="btn">Delete</a>
+                            }
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+        <a asp-controller="Comments" asp-action="AddToVideo" asp-route-id="@Model.Id" class="btn">Add comment</a>
+    </div>
+
+</div>

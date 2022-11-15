@@ -1,0 +1,37 @@
+﻿@model EditVideoFormModel
+
+@{
+    ViewData["Title"] = "Edit video";
+
+
+}
+
+<div class="row">
+    <div class="col-lg-6 offset-lg-1 col-sm-12">
+        <h1 class="heading-margin">Edit Meme</h1>
+        <form method="post">
+            <div class="form-group">
+                <label asp-for="VideoUrl">Video URL</label>
+                <input class="form-control" asp-for="VideoUrl" placeholder="The URL of the video">
+                <span asp-validation-for="VideoUrl" class="small text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Title">Video Title</label>
+                <textarea class="form-control" rows="5" asp-for="Title" placeholder="Title of the video"></textarea>
+                <span asp-validation-for="Title" class="small text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description">Video Description</label>
+                <textarea class="form-control" rows="5" asp-for="Description" placeholder="Description of the video"></textarea>
+                <span asp-validation-for="Description" class="small text-danger"></span>
+            </div>
+            <input class="btn btn-primary float-right" type="submit" value="Save" />
+        </form>
+    </div>
+</div>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial"/> 
+}

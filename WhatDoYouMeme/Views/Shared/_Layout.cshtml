@@ -22,10 +22,16 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Memes" asp-action="All">All Memes</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Videos" asp-action="All">All Videos</a>
+                        </li>
                         @if (!User.IsAdmin())
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Memes" asp-action="Add">Add Meme</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Videos" asp-action="Add">Add Video</a>
                             </li>
                         }
                     </ul>

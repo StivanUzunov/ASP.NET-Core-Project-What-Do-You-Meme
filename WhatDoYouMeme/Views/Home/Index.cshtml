@@ -30,19 +30,19 @@
     <div class="carousel-inner" >
         @if (firstMeme != null)
         {
-            <div class="carousel-item active" style=" object-fit: cover ">
+            <div class="carousel-item active" style="object-fit: cover">
                 <img class="d-block w-100" src="@firstMeme.ImageUrl" alt="First meme">
             </div>
         }
         @if (secondMeme != null)
         {
-            <div class="carousel-item" style=" object-fit: cover">
+            <div class="carousel-item" style="object-fit: cover">
                 <img class="d-block w-100" src="@secondMeme.ImageUrl" alt="Second meme">
             </div>
         }
       @if (thirdMeme != null)
       {
-          <div class="carousel-item" style=" object-fit: cover">
+          <div class="carousel-item" style="object-fit: cover ">
               <img class="d-block w-100" src="@thirdMeme.ImageUrl" alt="Third meme">
           </div>
       }
@@ -57,12 +57,15 @@
     </a>
 </div>
 
-<div class="jumbotron" style="margin-top: 24px">
+<div class="jumbotron" style="margin-top: 24px; background-color: orange">
     <div class="row">
-        <div class="col-md-6" style="text-align: center; font-size: 24px; font-weight: bold">
-           @Model.TotalMemes Memes
+        <div class="col-md-4" style="text-align: center; font-size: 24px; font-weight: bold">
+            @Model.TotalMemes Memes
         </div>
-        <div class="col-md-6" style="text-align: center; font-size: 24px; font-weight: bold ">
+        <div class="col-md-4" style="text-align: center; font-size: 24px; font-weight: bold">
+            @Model.TotalVideos Videos
+        </div>
+        <div class="col-md-4" style="text-align: center; font-size: 24px; font-weight: bold ">
             @Model.TotalUsers Users
         </div>
     </div>

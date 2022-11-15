@@ -19,6 +19,9 @@
                 <a class="nav-link text-dark" asp-area="" asp-controller="Memes" asp-action="Mine">My memes</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link text-dark" asp-area="" asp-controller="Videos" asp-action="Mine">My videos</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link text-dark" asp-area="" asp-controller="Issues" asp-action="Log">Log Issue</a>
             </li>
         }
@@ -32,7 +35,10 @@
         else if (userIsAdmin)
         {
             <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="Admin" asp-controller="Memes" asp-action="All">Administration</a>
+                <a class="nav-link text-dark" asp-area="Admin" asp-controller="Memes" asp-action="All">Memes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-area="Admin" asp-controller="Videos" asp-action="All">Videos</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link text-dark" asp-area="Admin" asp-controller="Issues" asp-action="All">Issues</a>
