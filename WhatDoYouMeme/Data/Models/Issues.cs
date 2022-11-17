@@ -20,6 +20,6 @@ namespace WhatDoYouMeme.Data.Models
         public bool IsSolved { get; set; }
         public int MemerId { get; init; }
         public Memer Memer { get; init; }
-      
+        public string UserEmail { get; set; }
     }
 }

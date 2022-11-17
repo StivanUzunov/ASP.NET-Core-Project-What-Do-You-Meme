@@ -14,7 +14,7 @@ using WhatDoYouMeme.Infrastructure;
 
 namespace WhatDoYouMeme.Controllers
 {
-    public class VideosController:Controller
+    public class VideosController : Controller
     {
         private readonly ApplicationDbContext data;
         private readonly IMemerService memers;
@@ -77,7 +77,7 @@ namespace WhatDoYouMeme.Controllers
 
             TempData[GlobalMessageKey] = "Your video was added successfully and it is waiting for approval!";
 
-            return RedirectToAction(nameof(Details), videoData.Id);
+            return RedirectToAction(nameof(All));
         }
 
         public IActionResult Details(int id)
@@ -119,7 +119,7 @@ namespace WhatDoYouMeme.Controllers
                     Likes = v.Likes,
                     MemerId = v.MemerId,
                     MemerName = v.Memer.Name,
-                    Comments = v.Comments.OrderByDescending(c => c.Id).Take(3).ToList(),
+                    Comments = v.Comments.OrderByDescending(c => c.Likes).Take(3).ToList(),
                 })
                 .ToList();
 

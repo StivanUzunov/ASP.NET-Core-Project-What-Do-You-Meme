@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WhatDoYouMeme.Data;
 using WhatDoYouMeme.Data.Models;
@@ -14,7 +15,7 @@ using static WhatDoYouMeme.WebConstants;
 
 namespace WhatDoYouMeme.Controllers
 {
-    public class IssuesController:Controller
+    public class IssuesController : Controller
     {
         private readonly ApplicationDbContext data;
         private readonly IMemerService memers;
@@ -47,7 +48,7 @@ namespace WhatDoYouMeme.Controllers
         {
             var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var memerId = this.data.Memers.Where(m => m.UserId == userId).Select(m => m.Id).FirstOrDefault();
-
+            var email = this.User.FindFirst(ClaimTypes.Email).Value;
             if (memerId == 0)
             {
 
@@ -61,11 +62,12 @@ namespace WhatDoYouMeme.Controllers
 
             var issueData = new Issues
             {
-               Title = issue.Title,
-               Date = DateTime.Now.ToString(CultureInfo.CurrentCulture),
-               Description = issue.Description,
-               IsSolved = false,
-               MemerId = memerId,
+                Title = issue.Title,
+                Date = DateTime.Now.ToString(CultureInfo.CurrentCulture),
+                Description = issue.Description,
+                IsSolved = false,
+                MemerId = memerId,
+                UserEmail = email
             };
 
             this.data.Issues.Add(issueData);

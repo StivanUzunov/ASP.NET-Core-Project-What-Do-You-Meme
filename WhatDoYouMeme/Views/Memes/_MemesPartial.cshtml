@@ -13,39 +13,40 @@
                 <p class="card-text">@meme.Description</p>
                 <h4>Date published:</h4>
                 <p class="card-text">@meme.Date</p>
+                <a asp-controller="Memes" asp-action="Like" asp-route-id="@meme.Id" class="btn btn-success">Like</a>
+                <span>@meme.Likes total likes</span> <br />
             </div>
-            <div class="card-body">
-                <a asp-controller="Memes" asp-action="Like" asp-route-id="@meme.Id" class="btn">Like</a>
-                <span>@meme.Likes total likes</span> <br>
+            <div>
+
                 @if (meme.Comments.Any())
                 {
-           
-                    <div>
-                        <ul  style=" margin-bottom: 24px">
-                            <h4>Comments:</h4>
-                            @foreach (var comment in meme.Comments)
-                            {
-                                <li>
-                                    @comment.MemerName<br>
-                                    @comment.CommentText<br>
-                                    <a asp-controller="Comments" asp-action="Like" asp-route-id="@comment.Id" class="btn">Like</a>
-                                    <span>@comment.Likes total likes</span>
+                    <ul style="margin-bottom: 24px; list-style-type: none; padding:18px">
+                        <h3>Comments:</h3>
+                        @foreach (var comment in meme.Comments)
+                        {
+                            <li>
+                                @comment.MemerName @comment.Date <br />
+                                - @comment.CommentText
+                                <div>
+                                    <a asp-controller="Comments" asp-action="Like" asp-route-id="@comment.Id" class="btn btn-primary">Like</a>
                                     @if (User.IsAdmin())
                                     {
-                                        <a asp-controller="Comments" asp-action="Delete" asp-route-id="@comment.Id" class="btn">Delete</a>
+                                        <a asp-controller="Comments" asp-action="Delete" asp-route-id="@comment.Id" class="btn btn-danger">Delete</a>
                                     }
-                                </li>
-                            }
-                        </ul>
-                    </div>
+                                    <span>@comment.Likes total likes</span>
+                                </div>
+                            </li>
+                        }
+                    </ul>
                 }
-                <a asp-controller="Memes" asp-action="Details" asp-route-id="@meme.Id" class="btn btn btn-primary">Details</a>
-                @if (ViewBag.AllowMemeEdit == true || User.IsAdmin())
-                {
-                    <a asp-controller="Memes" asp-action="Edit" asp-route-id="@meme.Id" class="btn btn-warning">Edit</a>
-                    <a asp-controller="Memes" asp-action="Delete" asp-route-id="@meme.Id" class="btn btn-danger">Delete</a>
-                }
+
             </div>
+            <a asp-controller="Memes" asp-action="Details" asp-route-id="@meme.Id" class="btn btn-info" style="margin-bottom: 12px">Details</a>
+            @if (ViewBag.AllowMemeEdit == true || User.IsAdmin())
+            {
+                <a asp-controller="Memes" asp-action="Edit" asp-route-id="@meme.Id" class="btn btn-warning" style="margin-bottom: 12px">Edit</a>
+                <a asp-controller="Memes" asp-action="Delete" asp-route-id="@meme.Id" class="btn btn-danger">Delete</a>
+            }
         </div>
     }
 

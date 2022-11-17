@@ -1,44 +1,49 @@
-﻿@model IEnumerable<IssueListingViewModel>
+﻿@model IssuesViewModel
 
 @{
     ViewData["Title"] = "Issues";
 }
 
-@if (!Model.Any())
+@if (!Model.Issues.Any())
 {
-    <h1>No issues for reviewing! :)</h1>
+    <h1>No issues for reviewing! You can take a break :)</h1>
+    <h2>All reviewed issues: @Model.IssuesReviewed</h2>
+    <a  asp-area="Admin" asp-controller="Issues" asp-action="Delete" class="btn btn-danger">Delete reviewed issues</a>
 }
 else
 {
-    <table class="table table-striped"  border="1">
-        <thead class="thead-dark">
+    <table class="table table-striped" border="1">
+        <thead class="thead-dark" style="white-space: nowrap">
             <tr>
                 <th scope="col">Id</th>
-                <th scope="col">Title</th>
                 <th scope="col">Date</th>
+                <th scope="col">Title</th>
                 <th scope="col">Description</th>
                 <th scope="col">Memer Id</th>
                 <th scope="col">Memer Name</th>
+                <th scope="col">Memer Email</th>
                 <th scope="col">Actions</th>
             </tr>
         </thead>
         <tbody>
-        @foreach (var issue in Model)
-        {
-            <tr>
-                <td scope="col">@issue.Id</td>
-                <td scope="col">@issue.Title</td>
-                <td scope="col">@issue.Date</td>
-                <td scope="col">@issue.Description</td>
-                <td scope="col">@issue.MemerId</td>
-                <td scope="col">@issue.MemerName</td>
-                <td scope="col">
-                    <a style="margin: 12px" asp-area="" asp-controller="Issues" asp-action="IsReviewed" asp-route-id="@issue.Id" class="btn btn-primary">Mark as viewed</a>
-                </td>
+            @foreach (var issue in Model.Issues)
+            {
+                <tr style="text-align: center">
+                    <td scope="col">@issue.Id</td>
+                    <td scope="col">@issue.Date</td>
+                    <td scope="col">@issue.Title</td>
+                    <td scope="col">@issue.Description</td>
+                    <td scope="col">@issue.MemerId</td>
+                    <td scope="col">@issue.MemerName</td>
+                    <td scope="col">@issue.UserEmail</td>
+                    <td scope="col">
+                        <a style="margin: 12px" asp-area="" asp-controller="Issues" asp-action="IsReviewed" asp-route-id="@issue.Id" class="btn btn-primary">Mark as viewed</a>
+                    </td>
 
-            </tr>
-        }
+                </tr>
+            }
         </tbody>
     </table>
-
+    <h2>All reviewed issues: @Model.IssuesReviewed</h2>
+    <a  asp-controller="Issues" asp-area="Admin" asp-action="Delete" class="btn btn-danger">Delete reviewed issues</a>
 }

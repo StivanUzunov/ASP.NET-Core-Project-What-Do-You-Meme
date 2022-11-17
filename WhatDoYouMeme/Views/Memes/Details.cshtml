@@ -8,46 +8,43 @@
 
 
 <div class="row">
-   
-    
-        <div class="card offset-lg-2" style="width: 800px; margin-bottom: 24px">
-            <img class="card-img-top" src="@Model.ImageUrl" alt="Meme">
-            <div class="card-body">
-                <h4>Memer:</h4>
-                <p class="card-text">@Model.MemerName</p>
-                <h4>Description:</h4>
-                <p class="card-text">@Model.Description</p>
-                <h4>Date published:</h4>
-                <p class="card-text">@Model.Date</p>
-            </div>
-            <div class="card-body">
-                <a href="#" class="card-link">Like</a>
-                <span>@Model.Likes total likes</span> <br />
-            </div>
-            @if (Model.Comments.Any())
-            {
-           
-                <div>
-                    <ul  style=" margin-bottom: 24px">
-                        <h4>Comments:</h4>
-                        @foreach (var comment in Model.Comments)
-                        {
-                    <li>
 
-                        @comment.CommentText<br>
-                        <a asp-controller="Comments" asp-action="Like" asp-route-id="@comment.Id" class="btn">Like</a>
-                        <span>@comment.Likes total likes</span>
 
-                        @if (User.IsAdmin())
-                        {
-                            <a asp-controller="Comments" asp-action="Delete" asp-route-id="@comment.Id" class="btn">Delete</a>
-                        }
-                    </li>
-                        }
-                    </ul>
-                </div>
-            }
-            <a asp-controller="Comments" asp-action="Add" asp-route-id="@Model.Id" class="btn">Add comment</a>
+    <div class="card offset-lg-2" style="width: 800px; margin-bottom: 24px">
+        <img class="card-img-top" src="@Model.ImageUrl" alt="Meme">
+        <div class="card-body">
+            <h4>Memer:</h4>
+            <p class="card-text">@Model.MemerName</p>
+            <h4>Description:</h4>
+            <p class="card-text">@Model.Description</p>
+            <h4>Date published:</h4>
+            <p class="card-text">@Model.Date</p>
+            <a asp-controller="Memes" asp-action="Like" asp-route-id="@Model.Id" class="btn btn-success">Like</a>
+            <span>@Model.Likes total likes</span> <br />
         </div>
+
+        @if (Model.Comments.Any())
+        {
+            <ul style="margin-bottom: 24px; list-style-type: none; padding: 18px">
+                <h3>Comments:</h3>
+                @foreach (var comment in Model.Comments)
+                {
+                    <li>
+                        @comment.MemerName @comment.Date <br />
+                        - @comment.CommentText
+                        <div>
+                            <a asp-controller="Comments" asp-action="Like" asp-route-id="@comment.Id" class="btn btn-primary">Like</a>
+                            @if (User.IsAdmin())
+                            {
+                                <a asp-controller="Comments" asp-action="Delete" asp-route-id="@comment.Id" class="btn btn-danger">Delete</a>
+                            }
+                            <span>@comment.Likes total likes</span>
+                        </div>
+                    </li>
+                }
+            </ul>
+        }
+        <a asp-controller="Comments" asp-action="Add" asp-route-id="@Model.Id" class="btn btn-info">Add comment</a>
+    </div>
 
 </div>

@@ -16,5 +16,6 @@ namespace WhatDoYouMeme.Models.Issues
 
         [Required]
         public int MemerId { get; init; }
+
     }
 }

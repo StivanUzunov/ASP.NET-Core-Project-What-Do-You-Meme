@@ -16,8 +16,6 @@ namespace WhatDoYouMeme.Models.Videos
         [StringLength(VideoDescriptionMaxLength, MinimumLength = VideoDescriptionMinLength)]
         public string Description { get; init; }
         [Required]
-        public int Likes { get; init; }
-        [Required]
         public int MemerId { get; init; }
     }
 }

@@ -6,7 +6,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WhatDoYouMeme.Data;
-using WhatDoYouMeme.Services; 
+using WhatDoYouMeme.Services;
 using WhatDoYouMeme.Data.Models;
 using WhatDoYouMeme.Infrastructure;
 using WhatDoYouMeme.Models.Memes;
@@ -30,7 +30,7 @@ namespace WhatDoYouMeme.Controllers
         {
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            
+
 
             var myMemes = this.data
                 .Posts
@@ -59,16 +59,16 @@ namespace WhatDoYouMeme.Controllers
                 Posts.
                 Where(m => m.Id == id)
                 .Select(m => new MemeListingViewModel
-            {
-                Id = m.Id,
-                ImageUrl = m.ImageUrl,
-                Description = m.Description,
-                Date = m.Date,
-                Likes = m.Likes,
-                MemerId = m.MemerId,
-                MemerName = m.Memer.Name,
-                Comments = m.Comments.OrderByDescending(l => l.Likes).ToList()
-            }).FirstOrDefault();               
+                {
+                    Id = m.Id,
+                    ImageUrl = m.ImageUrl,
+                    Description = m.Description,
+                    Date = m.Date,
+                    Likes = m.Likes,
+                    MemerId = m.MemerId,
+                    MemerName = m.Memer.Name,
+                    Comments = m.Comments.OrderByDescending(l => l.Likes).ToList()
+                }).FirstOrDefault();
 
 
             return View(memeData);
@@ -95,7 +95,7 @@ namespace WhatDoYouMeme.Controllers
 
             var memes = this.data
                 .Posts
-                .Where(m=>m.isPublic)
+                .Where(m => m.isPublic)
                 .OrderByDescending(m => m.Id)
                 .Select(m => new MemeListingViewModel
                 {
@@ -106,7 +106,7 @@ namespace WhatDoYouMeme.Controllers
                     Likes = m.Likes,
                     MemerId = m.MemerId,
                     MemerName = m.Memer.Name,
-                    Comments = m.Comments.OrderByDescending(c=>c.Id).Take(3).ToList(),
+                    Comments = m.Comments.OrderByDescending(c => c.Likes).Take(3).ToList(),
                 })
                 .ToList();
 
@@ -172,7 +172,7 @@ namespace WhatDoYouMeme.Controllers
                 })
                 .FirstOrDefault();
 
-            if (meme.MemerId!=memerId&&!User.IsAdmin())
+            if (meme.MemerId != memerId && !User.IsAdmin())
             {
                 return Unauthorized();
             }
@@ -204,7 +204,7 @@ namespace WhatDoYouMeme.Controllers
                 return View(meme);
             }
 
-            if (memeData.MemerId != memerId&&!User.IsAdmin())
+            if (memeData.MemerId != memerId && !User.IsAdmin())
             {
                 return BadRequest();
             }
@@ -253,9 +253,9 @@ namespace WhatDoYouMeme.Controllers
             var meme = this.data.Posts.Where(m => m.Id == id).First();
 
             meme.Likes++;
-           
 
-            this.data.            SaveChanges();
+
+            this.data.SaveChanges();
 
             return RedirectToAction(nameof(All), "Memes", $"{id}");
 

@@ -5,51 +5,53 @@
 <div class="row">
     @foreach (var video in Model)
     {
-    <div id="@video.Id" class="card offset-lg-2" style=" width:800px;  margin-bottom: 24px">
-        <iframe src="@video.VideoUrl" class="card-img-top" alt="Video URL" height="400px" > </iframe>
-        <div class="card-body">
-            <h4>Memer:</h4>
-            <p class="card-text">@video.MemerName</p>
-            <h4>Title:</h4>
-            <p class="card-text">@video.Title</p>
-            <h4>Description:</h4>
-            <p class="card-text">@video.Description</p>
-            <h4>Date published:</h4>
-            <p class="card-text">@video.Date</p>
-        </div>
-        <div class="card-body">
-            <a asp-controller="Videos" asp-action="Like" asp-route-id="@video.Id" class="btn">Like</a>
-            <span>@video.Likes total likes</span> <br>
+        <div id="@video.Id" class="card offset-lg-2" style=" width:800px;  margin-bottom: 24px">
+            <iframe src="@video.VideoUrl" class="card-img-top" alt="Video URL" height="400px"> </iframe>
+            <div class="card-body">
+                <h4>Memer:</h4>
+                <p class="card-text">@video.MemerName</p>
+                <h4>Title:</h4>
+                <p class="card-text">@video.Title</p>
+                <h4>Description:</h4>
+                <p class="card-text">@video.Description</p>
+                <h4>Date published:</h4>
+                <p class="card-text">@video.Date</p>
+                <a asp-controller="Videos" asp-action="Like" asp-route-id="@video.Id" class="btn btn-success">Like</a>
+                <span>@video.Likes total likes</span> <br>
+            </div>
+
             @if (video.Comments.Any())
             {
 
-                <div>
-                    <ul style=" margin-bottom: 24px">
-                        <h4>Comments:</h4>
-                        @foreach (var comment in video.Comments)
-                        {
-                            <li>
-                                @comment.MemerName<br>
-                                @comment.CommentText<br>
-                                <a asp-controller="Comments" asp-action="LikeOfVideo" asp-route-id="@comment.Id" class="btn">Like</a>
-                                <span>@comment.Likes total likes</span>
+                <ul style=" margin-bottom: 24px; list-style-type: none; padding: 18px">
+                    <h3>Comments:</h3>
+                    @foreach (var comment in video.Comments)
+                    {
+                        <li>
+                            @comment.MemerName @comment.Date <br />
+                            - @comment.CommentText
+                            <div>
+                                <a asp-controller="Comments" asp-action="LikeOfVideo" asp-route-id="@comment.Id" class="btn btn-primary">Like</a>
                                 @if (User.IsAdmin())
                                 {
-                                    <a asp-controller="Comments" asp-action="DeleteOfVideo" asp-route-id="@comment.Id" class="btn">Delete</a>
+                                    <a asp-controller="Comments" asp-action="DeleteOfVideo" asp-route-id="@comment.Id" class="btn btn-danger">Delete</a>
                                 }
-                            </li>
-                        }
-                    </ul>
-                </div>
+                                <span>@comment.Likes total likes</span>
+                               
+                            </div>
+                        </li>
+                    }
+                </ul>
+
             }
-            <a asp-controller="Videos" asp-action="Details" asp-route-id="@video.Id" class="btn btn btn-primary">Details</a>
+            <a asp-controller="Videos" asp-action="Details" asp-route-id="@video.Id" class="btn btn btn-info" style="margin-bottom: 12px">Details</a>
             @if (ViewBag.AllowVideoEdit == true || User.IsAdmin())
             {
-                <a asp-controller="Videos" asp-action="Edit" asp-route-id="@video.Id" class="btn btn-warning">Edit</a>
+                <a asp-controller="Videos" asp-action="Edit" asp-route-id="@video.Id" class="btn btn-warning" style="margin-bottom: 12px">Edit</a>
                 <a asp-controller="Videos" asp-action="Delete" asp-route-id="@video.Id" class="btn btn-danger">Delete</a>
             }
         </div>
-    </div>
+
     }
 
 </div>

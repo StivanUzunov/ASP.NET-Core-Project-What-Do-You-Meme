@@ -5,7 +5,7 @@ namespace WhatDoYouMeme.Areas.Admin.Controllers
 {
     [Area(AdminConstants.AreaName)]
     [Authorize(Roles = AdminConstants.AdministratorRoleName)]
-    public abstract class AdminController : Controller 
+    public abstract class AdminController : Controller
     {
 
     }

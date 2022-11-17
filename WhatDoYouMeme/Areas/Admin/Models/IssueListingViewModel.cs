@@ -8,5 +8,6 @@
         public string Description { get; init; }
         public int MemerId { get; set; }
         public string MemerName { get; set; }
+        public string UserEmail { get; set; }
     }
 }
