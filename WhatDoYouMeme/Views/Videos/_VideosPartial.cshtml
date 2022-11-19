@@ -1,7 +1,6 @@
 ﻿@model IEnumerable<VideoListingViewModel>
 @using WhatDoYouMeme.Infrastructure
 
-
 <div class="row">
     @foreach (var video in Model)
     {
@@ -22,7 +21,6 @@
 
             @if (video.Comments.Any())
             {
-
                 <ul style=" margin-bottom: 24px; list-style-type: none; padding: 18px">
                     <h3>Comments:</h3>
                     @foreach (var comment in video.Comments)
@@ -42,7 +40,6 @@
                         </li>
                     }
                 </ul>
-
             }
             <a asp-controller="Videos" asp-action="Details" asp-route-id="@video.Id" class="btn btn btn-info" style="margin-bottom: 12px">Details</a>
             @if (ViewBag.AllowVideoEdit == true || User.IsAdmin())

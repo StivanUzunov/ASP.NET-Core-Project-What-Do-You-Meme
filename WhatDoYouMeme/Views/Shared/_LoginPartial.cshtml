@@ -1,6 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@using WhatDoYouMeme.Services
-@using System.Security.Claims
+@using WhatDoYouMeme.Services.Memers
 @using WhatDoYouMeme.Infrastructure
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
@@ -9,7 +8,7 @@
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
     {
-        var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        var userId = this.User.GerUserId();
         var userIsMemer = Memers.IsMemer(userId);
         var userIsAdmin = User.IsAdmin();
 
@@ -54,8 +53,6 @@
                 <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
             </form>
         </li>
-
-
     }
 
     else

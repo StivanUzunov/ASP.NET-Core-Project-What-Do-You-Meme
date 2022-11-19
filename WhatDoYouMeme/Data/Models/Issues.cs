@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using static WhatDoYouMeme.Data.DataConstants;
 
 namespace WhatDoYouMeme.Data.Models

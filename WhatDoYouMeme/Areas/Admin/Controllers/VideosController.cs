@@ -1,8 +1,6 @@
 ﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using WhatDoYouMeme.Data;
-using WhatDoYouMeme.Data.Models;
-using WhatDoYouMeme.Models.Memes;
 using WhatDoYouMeme.Models.Videos;
 
 namespace WhatDoYouMeme.Areas.Admin.Controllers

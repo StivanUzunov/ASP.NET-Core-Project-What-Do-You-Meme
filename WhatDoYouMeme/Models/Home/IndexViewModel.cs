@@ -8,8 +8,6 @@ namespace WhatDoYouMeme.Models.Home
         public int TotalMemes { get; init; }
         public int TotalVideos { get; init; }
         public int TotalUsers { get; init; }
-
         public List<MemeListingViewModel> Posts { get; set; }
-
     }
 }

@@ -1,18 +1,18 @@
 using Microsoft.AspNetCore.Mvc;
 using WhatDoYouMeme.Infrastructure;
-using WhatDoYouMeme.Services;
+using WhatDoYouMeme.Services.Memers;
+using WhatDoYouMeme.Services.Issues;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using WhatDoYouMeme.Data;
 
 namespace WhatDoYouMeme
 {
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.Identity;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Hosting;
-    using WhatDoYouMeme.Data;
-
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -24,7 +24,8 @@ namespace WhatDoYouMeme
         {
             services
                 .AddDbContext<ApplicationDbContext>(options 
-                    => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                    => options
+                        .UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services
                 .AddDatabaseDeveloperPageExceptionFilter();
@@ -45,6 +46,7 @@ namespace WhatDoYouMeme
                 });
 
             services.AddTransient<IMemerService, MemerService>();
+            services.AddTransient<IIssueService, IssueService>();
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {

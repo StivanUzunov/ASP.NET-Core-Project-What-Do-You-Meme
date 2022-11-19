@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Linq;
-using Microsoft.CodeAnalysis.Operations;
 using Microsoft.Extensions.Caching.Memory;
 using WhatDoYouMeme.Data;
-using WhatDoYouMeme.Data.Models;
 using WhatDoYouMeme.Models;
 using WhatDoYouMeme.Models.Home;
 using WhatDoYouMeme.Models.Memes;
@@ -65,10 +63,7 @@ namespace WhatDoYouMeme.Controllers
             });
         }
 
-        public IActionResult About()
-        {
-            return View();
-        }
+        public IActionResult About() => View();
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error() => View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });

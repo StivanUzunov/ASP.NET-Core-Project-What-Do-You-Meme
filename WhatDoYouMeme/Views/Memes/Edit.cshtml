@@ -2,8 +2,6 @@
 
 @{
     ViewData["Title"] = "Edit Meme";
-
-
 }
 
 <div class="row">
@@ -15,7 +13,6 @@
                 <input class="form-control" asp-for="ImageUrl" placeholder="The Image URL of the Meme">
                 <span asp-validation-for="ImageUrl" class="small text-danger"></span>
             </div>
-
             <div class="form-group">
                 <label asp-for="Description">Meme Description</label>
                 <textarea class="form-control" rows="5" asp-for="Description" placeholder="Description of the Meme"></textarea>

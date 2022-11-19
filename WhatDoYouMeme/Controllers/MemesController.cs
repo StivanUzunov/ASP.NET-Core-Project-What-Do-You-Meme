@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WhatDoYouMeme.Data;
-using WhatDoYouMeme.Services;
+using WhatDoYouMeme.Services.Memers;
 using WhatDoYouMeme.Data.Models;
 using WhatDoYouMeme.Infrastructure;
 using WhatDoYouMeme.Models.Memes;
@@ -29,7 +28,7 @@ namespace WhatDoYouMeme.Controllers
         public IActionResult Mine()
         {
 
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var userId = this.User.GerUserId();
 
 
             var myMemes = this.data
@@ -77,7 +76,7 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Add()
         {
-            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var userId = this.User.GerUserId();
 
 
             if (!this.memers.IsMemer(userId))
@@ -117,8 +116,8 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Add(AddMemeFormModel meme)
         {
-            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var memerId = this.data.Memers.Where(m => m.UserId == userId).Select(m => m.Id).FirstOrDefault();
+            var userId = this.User.GerUserId();
+            var memerId = this.memers.GetMemerId(userId);
 
             if (memerId == 0)
             {
@@ -148,14 +147,14 @@ namespace WhatDoYouMeme.Controllers
 
             TempData[GlobalMessageKey] = "Your Meme was added successfully and it is waiting for approval!";
 
-            return RedirectToAction(nameof(Details), memeData.Id);
+            return RedirectToAction(nameof(All));
         }
 
         [Authorize]
         public IActionResult Edit(int id)
         {
-            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var memerId = this.data.Memers.Where(m => m.UserId == userId).Select(m => m.Id).FirstOrDefault();
+            var userId = this.User.GerUserId();
+            var memerId = this.memers.GetMemerId(userId);
             if (!memers.IsMemer(userId) && !User.IsAdmin())
             {
                 return RedirectToAction(nameof(MemersController.Create), "Memers");
@@ -189,8 +188,8 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Edit(int id, EditMemeFormModel meme)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var memerId = this.data.Memers.Where(m => m.UserId == userId).Select(m => m.Id).FirstOrDefault();
+            var userId = this.User.GerUserId();
+            var memerId = this.memers.GetMemerId(userId);
 
             var memeData = this.data.Posts.Where(m => m.Id == id).First();
             if (memerId == 0 && !User.IsAdmin())
@@ -250,6 +249,15 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Like(int id)
         {
+            var userId = this.User.GerUserId();
+
+
+            if (!this.memers.IsMemer(userId))
+            {
+
+                return RedirectToAction(nameof(MemersController.Create), "Memers");
+            };
+
             var meme = this.data.Posts.Where(m => m.Id == id).First();
 
             meme.Likes++;

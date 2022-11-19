@@ -1,6 +1,5 @@
 ﻿@model IEnumerable<MemeListingViewModel>
 
-
 @{
     ViewBag.Title = "My memes";
     ViewBag.AllowMemeEdit = true;
@@ -12,6 +11,5 @@
     <h1 class="text-center">You do not have any memes yet!</h1>
     <button type="button" class="btn btn-primary btn-lg" style="text-align: center; margin-top: 40px; position: center" onclick="location.href='@Url.Action("Add","Memes")'">Add Meme</button>
 }
-
 
 <partial name="_MemesPartial" model="@Model" />

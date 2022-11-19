@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using WhatDoYouMeme.Data;
 using WhatDoYouMeme.Data.Models;
 using WhatDoYouMeme.Models.Videos;
-using WhatDoYouMeme.Services;
+using WhatDoYouMeme.Services.Memers;
 using static WhatDoYouMeme.WebConstants;
 using WhatDoYouMeme.Infrastructure;
 
@@ -29,7 +29,7 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Add()
         {
-            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var userId = this.User.GerUserId();
 
 
             if (!this.memers.IsMemer(userId))
@@ -46,8 +46,8 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Add(AddVideoFormModel video)
         {
-            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var memerId = this.data.Memers.Where(m => m.UserId == userId).Select(m => m.Id).FirstOrDefault();
+            var userId = this.User.GerUserId();
+            var memerId = this.memers.GetMemerId(userId);
 
             if (memerId == 0)
             {
@@ -129,6 +129,15 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Like(int id)
         {
+            var userId = this.User.GerUserId();
+
+
+            if (!this.memers.IsMemer(userId))
+            {
+
+                return RedirectToAction(nameof(MemersController.Create), "Memers");
+            };
+
             var video = this.data.Videos.Where(m => m.Id == id).First();
 
             video.Likes++;
@@ -155,8 +164,9 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Edit(int id)
         {
-            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var memerId = this.data.Memers.Where(m => m.UserId == userId).Select(m => m.Id).FirstOrDefault();
+            var userId = this.User.GerUserId();
+            var memerId = this.memers.GetMemerId(userId);
+
             if (!memers.IsMemer(userId) && !User.IsAdmin())
             {
                 return RedirectToAction(nameof(MemersController.Create), "Memers");
@@ -192,8 +202,8 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Edit(int id, EditVideoFormModel video)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var memerId = this.data.Memers.Where(m => m.UserId == userId).Select(m => m.Id).FirstOrDefault();
+            var userId = this.User.GerUserId();
+            var memerId = this.memers.GetMemerId(userId);
             var videoData = this.data.Videos.Where(m => m.Id == id).First();
 
             if (memerId == 0 && !User.IsAdmin())
@@ -229,7 +239,7 @@ namespace WhatDoYouMeme.Controllers
         public IActionResult Mine()
         {
 
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var userId = this.User.GerUserId();
 
 
             var myVideos = this.data

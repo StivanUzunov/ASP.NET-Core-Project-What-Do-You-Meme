@@ -9,13 +9,8 @@ namespace WhatDoYouMeme.Models.Comments
         [Required]
         [MaxLength(CommentMaxLength)]
         public string CommentText { get; set; }
-
-        public int PostId { get; set; }
-        
         public Post Post { get; set; }
-
         public int MemerId { get; set; }
-
         public Memer Memer { get; set; }
 
     }

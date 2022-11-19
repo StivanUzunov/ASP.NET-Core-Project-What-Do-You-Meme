@@ -5,7 +5,6 @@ namespace WhatDoYouMeme.Models.Memes
 {
     public class MemeListingViewModel
     {
-
         public int Id { get; init; }
         public string Date { get; init; }
         public string ImageUrl { get; init; }
@@ -14,6 +13,5 @@ namespace WhatDoYouMeme.Models.Memes
         public int MemerId { get; set; }
         public string MemerName { get; set; }
         public List<Comment> Comments { get; init; }
-
     }
 }

@@ -6,7 +6,6 @@ namespace WhatDoYouMeme.Data.Models
     {
 
         public int Id { get; init; }
-
         [Required]
         [MaxLength(CommentMaxLength)]
         public string CommentText { get; set; }

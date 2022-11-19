@@ -4,12 +4,9 @@
     ViewBag.Title = "All memes";
 }
 
-
 @if (!Model.Any())
 {
     <h1 class="text-center">No memes found at the moment.</h1>
 }
-
-
 
 <partial name="_MemesPartial" model="@Model" />

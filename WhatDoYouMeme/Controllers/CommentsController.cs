@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Globalization;
-using System.Security.Claims;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WhatDoYouMeme.Data;
 using WhatDoYouMeme.Data.Models;
+using WhatDoYouMeme.Infrastructure;
 using WhatDoYouMeme.Models.Comments;
-using WhatDoYouMeme.Services;
+using WhatDoYouMeme.Services.Memers;
 using static WhatDoYouMeme.WebConstants;
 
 namespace WhatDoYouMeme.Controllers
@@ -27,7 +27,7 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Add()
         {
-            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var userId = this.User.GerUserId();
 
 
             if (!this.memers.IsMemer(userId))
@@ -44,9 +44,9 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Add(int id,AddCommentFormModel comment)
         {
-            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var memerId = this.data.Memers.Where(m => m.UserId == userId).Select(m => m.Id).FirstOrDefault();
-            var memerName = this.data.Memers.Where(m => m.UserId == userId).Select(n => n.Name).FirstOrDefault();
+            var userId = this.User.GerUserId();
+            var memerId = this.memers.GetMemerId(userId);
+            var memerName = this.memers.MemerName(userId);
 
             if (memerId == 0)
             {
@@ -95,6 +95,15 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Like(int id)
         {
+            var userId = this.User.GerUserId();
+
+
+            if (!this.memers.IsMemer(userId))
+            {
+
+                return RedirectToAction(nameof(MemersController.Create), "Memers");
+            };
+
             var comment = this.data.Comments.Where(m => m.Id == id).First();
 
             var postId = this.data.Posts.Where(p => p.Comments.Contains(comment)).Select(i => i.Id).First();
@@ -110,7 +119,7 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult AddToVideo()
         {
-            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var userId = this.User.GerUserId();
 
 
             if (!this.memers.IsMemer(userId))
@@ -127,9 +136,9 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult AddToVideo(int id, AddCommentFormModelVideo comment)
         {
-            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var memerId = this.data.Memers.Where(m => m.UserId == userId).Select(m => m.Id).FirstOrDefault();
-            var memerName = this.data.Memers.Where(m => m.UserId == userId).Select(n => n.Name).FirstOrDefault();
+            var userId = this.User.GerUserId();
+            var memerId = this.memers.GetMemerId(userId);
+            var memerName = this.memers.MemerName(userId);
 
             if (memerId == 0)
             {
@@ -178,6 +187,15 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult LikeofVideo(int id)
         {
+            var userId = this.User.GerUserId();
+
+
+            if (!this.memers.IsMemer(userId))
+            {
+
+                return RedirectToAction(nameof(MemersController.Create), "Memers");
+            };
+
             var comment = this.data.Comments.Where(m => m.Id == id).First();
 
             var videoId = this.data.Videos.Where(p => p.Comments.Contains(comment)).Select(i => i.Id).First();

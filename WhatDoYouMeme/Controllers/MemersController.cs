@@ -1,19 +1,18 @@
-﻿using System.Linq;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Razor.TagHelpers;
-using WhatDoYouMeme.Data;
-using WhatDoYouMeme.Data.Models;
+using WhatDoYouMeme.Infrastructure;
 using WhatDoYouMeme.Models.Memers;
+using WhatDoYouMeme.Services.Memers;
 using static WhatDoYouMeme.WebConstants;
+
 namespace WhatDoYouMeme.Controllers
 {
     public class MemersController:Controller
     {
-        private readonly ApplicationDbContext data;
+        private readonly IMemerService memers;
 
-        public MemersController(ApplicationDbContext data) => this.data = data;
+        public MemersController(IMemerService memers) 
+            => this.memers = memers;
 
         [Authorize]
         public IActionResult Create() => View();
@@ -22,12 +21,9 @@ namespace WhatDoYouMeme.Controllers
         [HttpPost]
         public IActionResult Create(BecomeMemerFormModel memer)
         {
-            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var userId = this.User.GerUserId();
 
-            var userIsAlreadyMemer = this.data
-                .Memers
-                .Any(m => m.UserId == userId);
-            if (userIsAlreadyMemer)
+            if (this.memers.UserIsAlreadyAMemer(userId))
             {
                 return BadRequest();
             }
@@ -37,15 +33,7 @@ namespace WhatDoYouMeme.Controllers
                 return View(memer);
             }
 
-            var memerData = new Memer
-            {
-                Name = memer.Name,
-                PhoneNumber = memer.PhoneNumber,
-                UserId = userId
-            };
-
-            this.data.Memers.Add(memerData);
-            this.data.SaveChanges();
+            this.memers.CreateMemer(memer,userId);
 
             TempData[GlobalMessageKey] = "Thank you for becoming a Memer!";
 

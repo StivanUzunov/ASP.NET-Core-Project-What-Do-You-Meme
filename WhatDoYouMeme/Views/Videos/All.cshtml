@@ -4,11 +4,9 @@
     ViewBag.Title = "All videos";
 }
 
-
 @if (!Model.Any())
 {
     <h1 class="text-center">No videos found at the moment.</h1>
 }
-
 
 <partial name="_VideosPartial" model="@Model" />
