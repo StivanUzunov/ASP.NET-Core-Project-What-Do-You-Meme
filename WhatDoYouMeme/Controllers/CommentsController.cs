@@ -1,12 +1,8 @@
-﻿using System;
-using System.Globalization;
-using System.Linq;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WhatDoYouMeme.Data;
-using WhatDoYouMeme.Data.Models;
 using WhatDoYouMeme.Infrastructure;
 using WhatDoYouMeme.Models.Comments;
+using WhatDoYouMeme.Services.Comments;
 using WhatDoYouMeme.Services.Memers;
 using static WhatDoYouMeme.WebConstants;
 
@@ -14,28 +10,23 @@ namespace WhatDoYouMeme.Controllers
 {
     public class CommentsController:Controller
     {
-        private readonly ApplicationDbContext data;
         private readonly IMemerService memers;
-
-        public CommentsController(ApplicationDbContext data, IMemerService memers)
+        private readonly ICommentService comments; 
+        public CommentsController(IMemerService memers,ICommentService comments)
         {
-            this.data = data;
             this.memers = memers;
+            this.comments = comments;
         }
-
 
         [Authorize]
         public IActionResult Add()
         {
-            var userId = this.User.GerUserId();
+            var userId = User.GerUserId();
 
-
-            if (!this.memers.IsMemer(userId))
+            if (!memers.IsMemer(userId))
             {
-
                 return RedirectToAction(nameof(MemersController.Create), "Memers");
             };
-
 
             return View(new AddCommentFormModel());
         }
@@ -44,9 +35,9 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Add(int id,AddCommentFormModel comment)
         {
-            var userId = this.User.GerUserId();
-            var memerId = this.memers.GetMemerId(userId);
-            var memerName = this.memers.MemerName(userId);
+            var userId = User.GerUserId();
+            var memerId = memers.GetMemerId(userId);
+            var memerName = memers.MemerName(userId);
 
             if (memerId == 0)
             {
@@ -59,18 +50,7 @@ namespace WhatDoYouMeme.Controllers
                 return View(comment);
             }
 
-            var commentData = new Comment
-            {
-                CommentText = comment.CommentText,
-                Likes = 0,
-                Date = DateTime.Now.ToString(CultureInfo.CurrentCulture),
-                MemerId = memerId,
-                PostId = id,
-                MemerName = memerName
-            };
-
-            this.data.Comments.Add(commentData);
-            this.data.SaveChanges();
+            comments.AddComment(id,comment,memerId,memerName);
 
             TempData[GlobalMessageKey] = "Your comment was added successfully!";
 
@@ -79,13 +59,9 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Delete(int id)
         {
-            var comment = this.data.Comments.Where(m => m.Id == id).First();
+            var postId = comments.GetPostId(id);
 
-            var postId = this.data.Posts.Where(p => p.Comments.Contains(comment)).Select(i => i.Id).First();
-
-            this.data.Remove(comment);
-
-            this.data.SaveChanges();
+            comments.DeleteComment(id);
 
             TempData[GlobalMessageKey] = "The comment was deleted successfully!";
 
@@ -95,22 +71,16 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Like(int id)
         {
-            var userId = this.User.GerUserId();
+            var userId = User.GerUserId();
 
-
-            if (!this.memers.IsMemer(userId))
+            if (!memers.IsMemer(userId))
             {
-
                 return RedirectToAction(nameof(MemersController.Create), "Memers");
             };
 
-            var comment = this.data.Comments.Where(m => m.Id == id).First();
+            var postId = comments.GetPostId(id);
 
-            var postId = this.data.Posts.Where(p => p.Comments.Contains(comment)).Select(i => i.Id).First();
-
-            comment.Likes++;
-
-            this.data.SaveChanges();
+            comments.Like(id);
 
             return RedirectToAction(nameof(MemesController.Details), "Memes", new { id = postId });
         }
@@ -119,15 +89,12 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult AddToVideo()
         {
-            var userId = this.User.GerUserId();
+            var userId = User.GerUserId();
 
-
-            if (!this.memers.IsMemer(userId))
+            if (!memers.IsMemer(userId))
             {
-
                 return RedirectToAction(nameof(MemersController.Create), "Memers");
             };
-
 
             return View(new AddCommentFormModelVideo());
         }
@@ -136,13 +103,12 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult AddToVideo(int id, AddCommentFormModelVideo comment)
         {
-            var userId = this.User.GerUserId();
-            var memerId = this.memers.GetMemerId(userId);
-            var memerName = this.memers.MemerName(userId);
+            var userId = User.GerUserId();
+            var memerId = memers.GetMemerId(userId);
+            var memerName = memers.MemerName(userId);
 
             if (memerId == 0)
             {
-
                 return RedirectToAction(nameof(MemersController.Create), "Memers");
             }
 
@@ -151,18 +117,7 @@ namespace WhatDoYouMeme.Controllers
                 return View(comment);
             }
 
-            var commentData = new Comment
-            {
-                CommentText = comment.CommentText,
-                Likes = 0,
-                Date = DateTime.Now.ToString(CultureInfo.CurrentCulture),
-                MemerId = memerId,
-                VideoId = id,
-                MemerName = memerName
-            };
-
-            this.data.Comments.Add(commentData);
-            this.data.SaveChanges();
+            comments.AddCommentToVideo(id,comment,memerId,memerName);
 
             TempData[GlobalMessageKey] = "Your comment was added successfully!";
 
@@ -171,13 +126,9 @@ namespace WhatDoYouMeme.Controllers
 
         public IActionResult DeleteOfVideo(int id)
         {
-            var comment = this.data.Comments.Where(m => m.Id == id).First();
+           var videoId=  comments.GetVideoId(id);
 
-            var videoId = this.data.Videos.Where(p => p.Comments.Contains(comment)).Select(i => i.Id).First();
-
-            this.data.Remove(comment);
-
-            this.data.SaveChanges();
+            comments.DeleteCommentFromVideo(id);
 
             TempData[GlobalMessageKey] = "The comment was deleted successfully!";
 
@@ -187,22 +138,15 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult LikeofVideo(int id)
         {
-            var userId = this.User.GerUserId();
+            var userId = User.GerUserId();
 
-
-            if (!this.memers.IsMemer(userId))
+            if (!memers.IsMemer(userId))
             {
-
                 return RedirectToAction(nameof(MemersController.Create), "Memers");
             };
+            comments.LikeVideo(id);
 
-            var comment = this.data.Comments.Where(m => m.Id == id).First();
-
-            var videoId = this.data.Videos.Where(p => p.Comments.Contains(comment)).Select(i => i.Id).First();
-
-            comment.Likes++;
-
-            this.data.SaveChanges();
+            var videoId = comments.GetVideoId(id);
 
             return RedirectToAction(nameof(VideosController.Details), "Videos", new { id = videoId });
         }

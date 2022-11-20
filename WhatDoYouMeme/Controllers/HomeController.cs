@@ -1,57 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using WhatDoYouMeme.Data;
 using WhatDoYouMeme.Models;
 using WhatDoYouMeme.Models.Home;
 using WhatDoYouMeme.Models.Memes;
+using WhatDoYouMeme.Services.Home;
 
 namespace WhatDoYouMeme.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ApplicationDbContext data;
         private readonly IMemoryCache cache;
+        private readonly IHomeService home;
 
-        public HomeController(ApplicationDbContext data, IMemoryCache cache)
+        public HomeController(IMemoryCache cache,IHomeService home)
         {
-            this.data = data;
             this.cache = cache;
+            this.home = home;
         } 
  
         public IActionResult Index()
         {
             const string latestMemesCacheKey = "latestMemesCacheKey";
 
-            var latestMemes = this.cache.Get<List<MemeListingViewModel>>(latestMemesCacheKey);
+            var latestMemes = cache.Get<List<MemeListingViewModel>>(latestMemesCacheKey);
             if (latestMemes == null)
             {
-                 latestMemes = this.data
-                    .Posts
-                    .Where(m=>m.isPublic)
-                    .OrderByDescending(m => m.Id)
-                    .Select(m => new MemeListingViewModel
-                    {
-                        Id = m.Id,
-                        ImageUrl = m.ImageUrl,
-                        Description = m.Description,
-                        Date = m.Date,
-                        Likes = m.Likes
-                    })
-                    .Take(3)
-                    .ToList();
+                latestMemes = home.GetLatestMemes();
 
                  var cacheOptions = new MemoryCacheEntryOptions()
                      .SetAbsoluteExpiration(TimeSpan.FromMinutes(15));
 
-                 this.cache.Set(latestMemesCacheKey, latestMemes, cacheOptions);
+                 cache.Set(latestMemesCacheKey, latestMemes, cacheOptions);
             }
-            var totalMemes = this.data.Posts.Count(m=>m.isPublic);
-            var totalVideos = this.data.Videos.Count(m=>m.IsPublic);
-            var totalUsers = this.data.Users.Count();
+
+            var totalMemes = home.GetTotalMemes();
+            var totalVideos = home.GetTotalVideos();
+            var totalUsers = home.GetTotalUsers();
             
 
             return View(new IndexViewModel

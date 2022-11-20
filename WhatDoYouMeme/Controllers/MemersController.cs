@@ -21,9 +21,9 @@ namespace WhatDoYouMeme.Controllers
         [HttpPost]
         public IActionResult Create(BecomeMemerFormModel memer)
         {
-            var userId = this.User.GerUserId();
+            var userId = User.GerUserId();
 
-            if (this.memers.UserIsAlreadyAMemer(userId))
+            if (memers.UserIsAlreadyAMemer(userId))
             {
                 return BadRequest();
             }
@@ -33,7 +33,7 @@ namespace WhatDoYouMeme.Controllers
                 return View(memer);
             }
 
-            this.memers.CreateMemer(memer,userId);
+            memers.CreateMemer(memer,userId);
 
             TempData[GlobalMessageKey] = "Thank you for becoming a Memer!";
 

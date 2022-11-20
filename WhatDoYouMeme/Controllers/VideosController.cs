@@ -1,43 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WhatDoYouMeme.Data;
-using WhatDoYouMeme.Data.Models;
+using WhatDoYouMeme.Infrastructure;
 using WhatDoYouMeme.Models.Videos;
 using WhatDoYouMeme.Services.Memers;
+using WhatDoYouMeme.Services.Videos;
 using static WhatDoYouMeme.WebConstants;
-using WhatDoYouMeme.Infrastructure;
 
 namespace WhatDoYouMeme.Controllers
 {
     public class VideosController : Controller
     {
-        private readonly ApplicationDbContext data;
         private readonly IMemerService memers;
+        private readonly IVideoService videos;
 
-        public VideosController(ApplicationDbContext data, IMemerService memers)
+        public VideosController(IMemerService memers,IVideoService videos)
         {
-            this.data = data;
             this.memers = memers;
+            this.videos = videos;
         }
-
 
         [Authorize]
         public IActionResult Add()
         {
-            var userId = this.User.GerUserId();
+            var userId = User.GerUserId();
 
-
-            if (!this.memers.IsMemer(userId))
+            if (!memers.IsMemer(userId))
             {
-
                 return RedirectToAction(nameof(MemersController.Create), "Memers");
             };
-
 
             return View(new AddVideoFormModel());
         }
@@ -46,12 +36,11 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Add(AddVideoFormModel video)
         {
-            var userId = this.User.GerUserId();
-            var memerId = this.memers.GetMemerId(userId);
+            var userId = User.GerUserId();
+            var memerId = memers.GetMemerId(userId);
 
             if (memerId == 0)
             {
-
                 return RedirectToAction(nameof(MemersController.Create), "Memers");
             }
 
@@ -60,20 +49,7 @@ namespace WhatDoYouMeme.Controllers
                 return View(video);
             }
 
-            var videoData = new Video()
-            {
-                VideoUrl = video.VideoUrl,
-                Title = video.Title,
-                Description = video.Description,
-                Likes = 0,
-                Date = DateTime.Now.ToString(CultureInfo.CurrentCulture),
-                Comments = new List<Comment>(),
-                MemerId = memerId,
-                IsPublic = false,
-            };
-
-            this.data.Videos.Add(videoData);
-            this.data.SaveChanges();
+            videos.Add(video,memerId);
 
             TempData[GlobalMessageKey] = "Your video was added successfully and it is waiting for approval!";
 
@@ -82,81 +58,37 @@ namespace WhatDoYouMeme.Controllers
 
         public IActionResult Details(int id)
         {
-            var videoData = this.data.
-                Videos.
-                Where(v => v.Id == id)
-                .Select(v => new VideoListingViewModel
-                {
-                    Id = v.Id,
-                    VideoUrl = v.VideoUrl,
-                    Title = v.Title,
-                    Description = v.Description,
-                    Date = v.Date,
-                    Likes = v.Likes,
-                    MemerId = v.MemerId,
-                    MemerName = v.Memer.Name,
-                    Comments = v.Comments.OrderByDescending(l => l.Likes).ToList()
-                }).FirstOrDefault();
-
+            var videoData = videos.Details(id);
 
             return View(videoData);
         }
 
         public IActionResult All()
         {
+            var videosData = videos.All();
 
-            var videos = this.data
-                .Videos
-                .Where(v => v.IsPublic)
-                .OrderByDescending(m => m.Id)
-                .Select(v => new VideoListingViewModel
-                {
-                    Id = v.Id,
-                    VideoUrl = v.VideoUrl,
-                    Title = v.Title,
-                    Description = v.Description,
-                    Date = v.Date,
-                    Likes = v.Likes,
-                    MemerId = v.MemerId,
-                    MemerName = v.Memer.Name,
-                    Comments = v.Comments.OrderByDescending(c => c.Likes).Take(3).ToList(),
-                })
-                .ToList();
-
-            return View(videos);
+            return View(videosData);
         }
 
         [Authorize]
         public IActionResult Like(int id)
         {
-            var userId = this.User.GerUserId();
+            var userId = User.GerUserId();
 
-
-            if (!this.memers.IsMemer(userId))
+            if (!memers.IsMemer(userId))
             {
-
                 return RedirectToAction(nameof(MemersController.Create), "Memers");
             };
 
-            var video = this.data.Videos.Where(m => m.Id == id).First();
-
-            video.Likes++;
-
-
-            this.data.SaveChanges();
+            videos.Like(id);
 
             return RedirectToAction(nameof(All), "Videos", $"{id}");
-
         }
 
         [Authorize]
         public IActionResult Delete(int id)
         {
-            var video = this.data.Videos.Where(m => m.Id == id).First();
-
-            this.data.Remove(video);
-
-            this.data.SaveChanges();
+            videos.Delete(id);
 
             return RedirectToAction(nameof(All));
         }
@@ -164,25 +96,15 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Edit(int id)
         {
-            var userId = this.User.GerUserId();
-            var memerId = this.memers.GetMemerId(userId);
+            var userId = User.GerUserId();
+            var memerId = memers.GetMemerId(userId);
 
             if (!memers.IsMemer(userId) && !User.IsAdmin())
             {
                 return RedirectToAction(nameof(MemersController.Create), "Memers");
             }
 
-            var video = this.data
-                .Videos
-                .Where(v => v.Id == id)
-                .Select(v => new EditVideoFormModel
-                {
-                    VideoUrl = v.VideoUrl,
-                    Title = v.Title,
-                    Description = v.Description,
-                    MemerId = v.MemerId
-                })
-                .FirstOrDefault();
+            var video = videos.Edit(id);
 
             if (video.MemerId != memerId && !User.IsAdmin())
             {
@@ -202,13 +124,12 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Edit(int id, EditVideoFormModel video)
         {
-            var userId = this.User.GerUserId();
-            var memerId = this.memers.GetMemerId(userId);
-            var videoData = this.data.Videos.Where(m => m.Id == id).First();
+            var userId = User.GerUserId();
+            var memerId = memers.GetMemerId(userId);
+            var videoData = videos.GetVideo(id);
 
             if (memerId == 0 && !User.IsAdmin())
             {
-
                 return RedirectToAction(nameof(MemersController.Create), "Memers");
             }
 
@@ -222,12 +143,7 @@ namespace WhatDoYouMeme.Controllers
                 return BadRequest();
             }
 
-            videoData.VideoUrl = video.VideoUrl;
-            videoData.Title = video.Title;
-            videoData.Description = video.Description;
-            videoData.IsPublic = false;
-
-            this.data.SaveChanges();
+            videos.EditVideo(videoData,video);
 
             TempData[GlobalMessageKey] = "Your video was edited successfully and it is waiting for approval!";
 
@@ -238,39 +154,16 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Mine()
         {
+            var userId = User.GerUserId();
 
-            var userId = this.User.GerUserId();
-
-
-            var myVideos = this.data
-                .Videos
-                .Where(v => v.Memer.UserId == userId)
-                .OrderByDescending(v => v.Id)
-                .Select(video => new VideoListingViewModel
-                {
-                    Id = video.Id,
-                    VideoUrl = video.VideoUrl,
-                    Title = video.Title,
-                    Description = video.Description,
-                    Date = video.Date,
-                    Likes = video.Likes,
-                    MemerId = video.MemerId,
-                    MemerName = video.Memer.Name,
-                    Comments = video.Comments.ToList()
-                })
-                .ToList();
+            var myVideos = videos.Mine(userId);
 
             return View(myVideos);
-
         }
 
         public IActionResult MakePublic(int id)
         {
-            var memeData = this.data.Videos.Where(m => m.Id == id).First();
-
-            memeData.IsPublic = true;
-
-            this.data.SaveChanges();
+           videos.MakePublic(id);
 
             TempData[GlobalMessageKey] = "This video was approved successfully!";
 

@@ -17,20 +17,20 @@ namespace WhatDoYouMeme.Areas.Admin.Controllers
         [Authorize]
         public IActionResult All()
         {
-            var reviewedIssues = this.issues.ReviewedIssues();
+            var reviewedIssues = issues.ReviewedIssues();
 
-            var issues = this.issues.AllIssues();
+            var allIssues = issues.AllIssues();
 
             return View(new IssuesViewModel
             {
-                Issues = issues,
+                Issues = allIssues,
                 IssuesReviewed = reviewedIssues
             });
         }
         [Authorize]
         public IActionResult Delete()
         {
-            this.issues.DeleteIssues();
+            issues.DeleteIssues();
 
             TempData[GlobalMessageKey] = "All reviewed issues have been deleted!";
 

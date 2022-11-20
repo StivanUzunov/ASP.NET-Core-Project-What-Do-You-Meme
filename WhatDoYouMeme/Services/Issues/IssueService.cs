@@ -16,32 +16,33 @@ namespace WhatDoYouMeme.Services.Issues
             => this.data = data;
 
         public int ReviewedIssues()
-        => this.data
+        => data
             .Issues
             .Count(i => i.IsSolved);
 
         public void DeleteIssues()
         {
-            var issuesForDeleting = this.data
+            var issuesForDeleting = data
                 .Issues
                 .Where(i => i.IsSolved).ToList();
 
-            this.data.Issues.RemoveRange(issuesForDeleting);
-            this.data.SaveChanges();
+            data.Issues.RemoveRange(issuesForDeleting);
+            data.SaveChanges();
         }
 
         public void IsReviewed(int id)
         {
-            var issueData = this.data.Issues.Where(i => i.Id == id).First();
+            var issueData = data.Issues
+                .First(i => i.Id == id);
 
             issueData.IsSolved = true;
 
-            this.data.SaveChanges();
+            data.SaveChanges();
         }
 
         public void Log(AddIssueFormModel issue,int memerId,string email)
         {
-            var issueData = new Data.Models.Issues()
+            var issueData = new Data.Models.Issues
             {
                 Title = issue.Title,
                 Date = DateTime.Now.ToString(CultureInfo.CurrentCulture),
@@ -51,14 +52,14 @@ namespace WhatDoYouMeme.Services.Issues
                 UserEmail = email
             };
 
-            this.data.Issues.Add(issueData);
-            this.data.SaveChanges();
+            data.Issues.Add(issueData);
+            data.SaveChanges();
 
         }
 
         public List<IssueListingViewModel> AllIssues()
         {
-            var issues = this.data
+            var issues = data
                 .Issues
                 .Where(i => i.IsSolved == false)
                 .OrderBy(i => i.Id)

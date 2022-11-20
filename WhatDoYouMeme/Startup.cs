@@ -10,6 +10,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WhatDoYouMeme.Data;
+using WhatDoYouMeme.Services.Comments;
+using WhatDoYouMeme.Services.Home;
+using WhatDoYouMeme.Services.Memes;
+using WhatDoYouMeme.Services.Videos;
 
 namespace WhatDoYouMeme
 {
@@ -47,6 +51,10 @@ namespace WhatDoYouMeme
 
             services.AddTransient<IMemerService, MemerService>();
             services.AddTransient<IIssueService, IssueService>();
+            services.AddTransient<ICommentService, CommentService>();
+            services.AddTransient<IHomeService, HomeService>();
+            services.AddTransient<IMemeService, MemeService>();
+            services.AddTransient<IVideoService, VideoService>();
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {

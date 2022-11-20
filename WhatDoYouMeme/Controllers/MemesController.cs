@@ -1,127 +1,68 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WhatDoYouMeme.Data;
-using WhatDoYouMeme.Services.Memers;
-using WhatDoYouMeme.Data.Models;
 using WhatDoYouMeme.Infrastructure;
 using WhatDoYouMeme.Models.Memes;
+using WhatDoYouMeme.Services.Memers;
+using WhatDoYouMeme.Services.Memes;
 using static WhatDoYouMeme.WebConstants;
 
 namespace WhatDoYouMeme.Controllers
 {
     public class MemesController : Controller
     {
-        private readonly ApplicationDbContext data;
         private readonly IMemerService memers;
-
-        public MemesController(ApplicationDbContext data, IMemerService memers)
+        private readonly IMemeService memes;
+        public MemesController(IMemerService memers, IMemeService memes)
         {
-            this.data = data;
             this.memers = memers;
+            this.memes = memes;
+        }
+        public IActionResult All()
+        {
+            var allMemes = this.memes.All();
+
+            return View(allMemes);
         }
 
         [Authorize]
         public IActionResult Mine()
         {
+            var userId = User.GerUserId();
 
-            var userId = this.User.GerUserId();
-
-
-            var myMemes = this.data
-                .Posts
-                .Where(m => m.Memer.UserId == userId)
-                .OrderByDescending(m => m.Id)
-                .Select(m => new MemeListingViewModel
-                {
-                    Id = m.Id,
-                    ImageUrl = m.ImageUrl,
-                    Description = m.Description,
-                    Date = m.Date,
-                    Likes = m.Likes,
-                    MemerId = m.MemerId,
-                    MemerName = m.Memer.Name,
-                    Comments = m.Comments.ToList()
-                })
-                .ToList();
+            var myMemes = memes.Mine(userId);
 
             return View(myMemes);
-
         }
 
         public IActionResult Details(int id)
         {
-            var memeData = this.data.
-                Posts.
-                Where(m => m.Id == id)
-                .Select(m => new MemeListingViewModel
-                {
-                    Id = m.Id,
-                    ImageUrl = m.ImageUrl,
-                    Description = m.Description,
-                    Date = m.Date,
-                    Likes = m.Likes,
-                    MemerId = m.MemerId,
-                    MemerName = m.Memer.Name,
-                    Comments = m.Comments.OrderByDescending(l => l.Likes).ToList()
-                }).FirstOrDefault();
-
+            var memeData = memes.Details(id);
 
             return View(memeData);
         }
-
+        
         [Authorize]
         public IActionResult Add()
         {
-            var userId = this.User.GerUserId();
+            var userId = User.GerUserId();
 
-
-            if (!this.memers.IsMemer(userId))
+            if (!memers.IsMemer(userId))
             {
-
                 return RedirectToAction(nameof(MemersController.Create), "Memers");
             };
 
-
             return View(new AddMemeFormModel());
-        }
-
-        public IActionResult All()
-        {
-
-            var memes = this.data
-                .Posts
-                .Where(m => m.isPublic)
-                .OrderByDescending(m => m.Id)
-                .Select(m => new MemeListingViewModel
-                {
-                    Id = m.Id,
-                    ImageUrl = m.ImageUrl,
-                    Description = m.Description,
-                    Date = m.Date,
-                    Likes = m.Likes,
-                    MemerId = m.MemerId,
-                    MemerName = m.Memer.Name,
-                    Comments = m.Comments.OrderByDescending(c => c.Likes).Take(3).ToList(),
-                })
-                .ToList();
-
-            return View(memes);
         }
 
         [HttpPost]
         [Authorize]
         public IActionResult Add(AddMemeFormModel meme)
         {
-            var userId = this.User.GerUserId();
-            var memerId = this.memers.GetMemerId(userId);
+            var userId = User.GerUserId();
+            var memerId = memers.GetMemerId(userId);
 
             if (memerId == 0)
             {
-
                 return RedirectToAction(nameof(MemersController.Create), "Memers");
             }
 
@@ -130,20 +71,7 @@ namespace WhatDoYouMeme.Controllers
                 return View(meme);
             }
 
-            var memeData = new Post
-            {
-                ImageUrl = meme.ImageUrl,
-                Description = meme.Description,
-                Likes = 0,
-                Date = DateTime.Now.ToString(CultureInfo.CurrentCulture),
-                Comments = new List<Comment>(),
-                MemerId = memerId,
-                isPublic = false,
-
-            };
-
-            this.data.Posts.Add(memeData);
-            this.data.SaveChanges();
+            memes.Add(meme,memerId);
 
             TempData[GlobalMessageKey] = "Your Meme was added successfully and it is waiting for approval!";
 
@@ -153,23 +81,15 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Edit(int id)
         {
-            var userId = this.User.GerUserId();
-            var memerId = this.memers.GetMemerId(userId);
+            var userId = User.GerUserId();
+            var memerId = memers.GetMemerId(userId);
+
             if (!memers.IsMemer(userId) && !User.IsAdmin())
             {
                 return RedirectToAction(nameof(MemersController.Create), "Memers");
             }
 
-            var meme = this.data
-                .Posts
-                .Where(m => m.Id == id)
-                .Select(m => new EditMemeFormModel
-                {
-                    ImageUrl = m.ImageUrl,
-                    Description = m.Description,
-                    MemerId = m.MemerId
-                })
-                .FirstOrDefault();
+            var meme = memes.Edit(id);
 
             if (meme.MemerId != memerId && !User.IsAdmin())
             {
@@ -188,13 +108,13 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Edit(int id, EditMemeFormModel meme)
         {
-            var userId = this.User.GerUserId();
-            var memerId = this.memers.GetMemerId(userId);
+            var userId = User.GerUserId();
+            var memerId = memers.GetMemerId(userId);
 
-            var memeData = this.data.Posts.Where(m => m.Id == id).First();
+            var memeData = memes.GetMemeData(id);
+
             if (memerId == 0 && !User.IsAdmin())
             {
-
                 return RedirectToAction(nameof(MemersController.Create), "Memers");
             }
 
@@ -208,11 +128,7 @@ namespace WhatDoYouMeme.Controllers
                 return BadRequest();
             }
 
-            memeData.ImageUrl = meme.ImageUrl;
-            memeData.Description = meme.Description;
-            memeData.isPublic = false;
-
-            this.data.SaveChanges();
+            memes.EditMemeData(memeData,meme);
 
             TempData[GlobalMessageKey] = "Your Meme was edited successfully and it is waiting for approval!";
 
@@ -222,11 +138,7 @@ namespace WhatDoYouMeme.Controllers
 
         public IActionResult MakePublic(int id)
         {
-            var memeData = this.data.Posts.Where(m => m.Id == id).First();
-
-            memeData.isPublic = true;
-
-            this.data.SaveChanges();
+            memes.MakePublic(id);
 
             TempData[GlobalMessageKey] = "This meme was approved successfully!";
 
@@ -237,11 +149,7 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Delete(int id)
         {
-            var meme = this.data.Posts.Where(m => m.Id == id).First();
-
-            this.data.Remove(meme);
-
-            this.data.SaveChanges();
+            memes.Delete(id);
 
             return RedirectToAction(nameof(All));
         }
@@ -249,24 +157,17 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Like(int id)
         {
-            var userId = this.User.GerUserId();
+            var userId = User.GerUserId();
 
-
-            if (!this.memers.IsMemer(userId))
+            if (!memers.IsMemer(userId))
             {
 
                 return RedirectToAction(nameof(MemersController.Create), "Memers");
             };
 
-            var meme = this.data.Posts.Where(m => m.Id == id).First();
-
-            meme.Likes++;
-
-
-            this.data.SaveChanges();
+            memes.Like(id);
 
             return RedirectToAction(nameof(All), "Memes", $"{id}");
-
         }
     }
 }

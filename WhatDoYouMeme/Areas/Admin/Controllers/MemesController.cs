@@ -1,39 +1,20 @@
-﻿using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using WhatDoYouMeme.Data;
-using WhatDoYouMeme.Models.Memes;
+﻿using Microsoft.AspNetCore.Mvc;
+using WhatDoYouMeme.Services.Memes;
 
 namespace WhatDoYouMeme.Areas.Admin.Controllers
 {
     public class MemesController : AdminController
     {
-        private readonly ApplicationDbContext data;
+        private readonly IMemeService memes;
 
-        public MemesController(ApplicationDbContext data)
-        => this.data = data;
-
-
+        public MemesController(IMemeService memes)
+        => this.memes = memes;
 
         public IActionResult All()
         {
-            var memes = this.data
-                .Posts
-                .Where(m=>m.isPublic==false)
-                .OrderBy(m=>m.Id)
-                .Select(m => new MemeListingViewModel
-                {
-                    Id = m.Id,
-                    ImageUrl = m.ImageUrl,
-                    Description = m.Description,
-                    Date = m.Date,
-                    Likes = m.Likes,
-                    MemerId = m.MemerId,
-                    MemerName = m.Memer.Name,
-                    Comments = m.Comments.ToList()
-                })
-                .ToList();
+            var allMemes = memes.AdminsAll();
 
-            return View(memes);
+            return View(allMemes);
         }
     }
 }

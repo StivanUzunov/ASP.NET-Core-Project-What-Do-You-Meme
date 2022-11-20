@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using WhatDoYouMeme.Infrastructure;
 using WhatDoYouMeme.Models.Issues;
-using WhatDoYouMeme.Services.Memers;
 using WhatDoYouMeme.Services.Issues;
+using WhatDoYouMeme.Services.Memers;
 using static WhatDoYouMeme.WebConstants;
 
 namespace WhatDoYouMeme.Controllers
@@ -20,10 +20,10 @@ namespace WhatDoYouMeme.Controllers
 
         public IActionResult Log()
         {
-            var userId = this.User.GerUserId();
+            var userId = User.GerUserId();
 
 
-            if (!this.memers.IsMemer(userId))
+            if (!memers.IsMemer(userId))
             {
 
                 return RedirectToAction(nameof(MemersController.Create), "Memers");
@@ -38,9 +38,9 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Log(AddIssueFormModel issue)
         {
-            var userId = this.User.GerUserId();
-            var memerId = this.memers.GetMemerId(userId);
-            var email = this.User.GerUserEmail();
+            var userId = User.GerUserId();
+            var memerId = memers.GetMemerId(userId);
+            var email = User.GerUserEmail();
 
             if (memerId == 0)
             {
@@ -52,7 +52,7 @@ namespace WhatDoYouMeme.Controllers
                 return View(issue);
             }
 
-            this.issues.Log(issue,memerId,email);
+            issues.Log(issue,memerId,email);
 
             TempData[GlobalMessageKey] = "Your issue was logged successfully and our admins will review it and you write back to you by email! Thank you! :)";
 
@@ -61,7 +61,7 @@ namespace WhatDoYouMeme.Controllers
 
         public IActionResult IsReviewed(int id)
         {
-           this.issues.IsReviewed(id);
+           issues.IsReviewed(id);
 
             TempData[GlobalMessageKey] = "This issue was reviewed successfully!";
 

@@ -1,40 +1,20 @@
-﻿using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using WhatDoYouMeme.Data;
-using WhatDoYouMeme.Models.Videos;
+﻿using Microsoft.AspNetCore.Mvc;
+using WhatDoYouMeme.Services.Videos;
 
 namespace WhatDoYouMeme.Areas.Admin.Controllers
 {
     public class VideosController:AdminController
     {
-        private readonly ApplicationDbContext data;
+        private readonly IVideoService videos;
 
-        public VideosController(ApplicationDbContext data)
-            => this.data = data;
-
-
+        public VideosController(IVideoService videos)
+            => this.videos = videos;
 
         public IActionResult All()
         {
-            var videos = this.data
-                .Videos
-                .Where(v => v.IsPublic == false)
-                .OrderBy(v => v.Id)
-                .Select(v => new VideoListingViewModel
-                {
-                    Id = v.Id,
-                    VideoUrl = v.VideoUrl,
-                    Title = v.Title,
-                    Description = v.Description,
-                    Date = v.Date,
-                    Likes = v.Likes,
-                    MemerId = v.MemerId,
-                    MemerName = v.Memer.Name,
-                    Comments = v.Comments.ToList()
-                })
-                .ToList();
+            var allVideos = videos.AdminsAll();
 
-            return View(videos);
+            return View(allVideos);
         }
     }
 }
