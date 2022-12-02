@@ -58,7 +58,7 @@ namespace WhatDoYouMeme.Controllers
 
             return RedirectToAction(nameof(MemesController.All), "Memes");
         }
-
+        [Authorize]
         public IActionResult IsReviewed(int id)
         {
            issues.IsReviewed(id);
