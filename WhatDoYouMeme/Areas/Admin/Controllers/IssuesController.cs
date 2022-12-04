@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WhatDoYouMeme.Areas.Admin.Models;
+using WhatDoYouMeme.Infrastructure;
 using WhatDoYouMeme.Services.Issues;
 using static WhatDoYouMeme.WebConstants;
 
@@ -17,6 +18,11 @@ namespace WhatDoYouMeme.Areas.Admin.Controllers
         [Authorize]
         public IActionResult All()
         {
+            if (!User.IsAdmin())
+            {
+                return BadRequest();
+            }
+
             var reviewedIssues = issues.ReviewedIssues();
 
             var allIssues = issues.AllIssues();
@@ -30,6 +36,11 @@ namespace WhatDoYouMeme.Areas.Admin.Controllers
         [Authorize]
         public IActionResult Delete()
         {
+            if (!User.IsAdmin())
+            {
+                return BadRequest();
+            }
+
             issues.DeleteIssues();
 
             TempData[GlobalMessageKey] = "All reviewed issues have been deleted!";
@@ -37,5 +48,19 @@ namespace WhatDoYouMeme.Areas.Admin.Controllers
             return RedirectToAction(nameof(All));
         }
 
+        [Authorize]
+        public IActionResult IsReviewed(int id)
+        {
+            if (!User.IsAdmin())
+            {
+                return BadRequest();
+            }
+
+            issues.IsReviewed(id);
+
+            TempData[GlobalMessageKey] = "This issue was reviewed successfully!";
+
+            return RedirectToAction(nameof(All));
+        }
     }
 }

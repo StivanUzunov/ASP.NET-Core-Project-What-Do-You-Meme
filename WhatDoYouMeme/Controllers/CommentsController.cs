@@ -21,7 +21,7 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Add()
         {
-            var userId = User.GerUserId();
+            var userId = User.GetUserId();
 
             if (!memers.IsMemer(userId))
             {
@@ -35,7 +35,7 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Add(int id,AddCommentFormModel comment)
         {
-            var userId = User.GerUserId();
+            var userId = User.GetUserId();
             var memerId = memers.GetMemerId(userId);
             var memerName = memers.MemerName(userId);
 
@@ -71,7 +71,7 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Like(int id)
         {
-            var userId = User.GerUserId();
+            var userId = User.GetUserId();
 
             if (!memers.IsMemer(userId))
             {
@@ -89,7 +89,7 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult AddToVideo()
         {
-            var userId = User.GerUserId();
+            var userId = User.GetUserId();
 
             if (!memers.IsMemer(userId))
             {
@@ -103,7 +103,7 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult AddToVideo(int id, AddCommentFormModelVideo comment)
         {
-            var userId = User.GerUserId();
+            var userId = User.GetUserId();
             var memerId = memers.GetMemerId(userId);
             var memerName = memers.MemerName(userId);
 
@@ -138,7 +138,7 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult LikeofVideo(int id)
         {
-            var userId = User.GerUserId();
+            var userId = User.GetUserId();
 
             if (!memers.IsMemer(userId))
             {

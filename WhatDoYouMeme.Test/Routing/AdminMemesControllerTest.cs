@@ -12,5 +12,10 @@ namespace WhatDoYouMeme.Test.Routing
             => Routing()
                 .ShouldMap("Admin/Memes/All")
                 .To<MemesController>(c => c.All());
+        [Fact]
+        public void GetMakePublicShouldBeMapped()
+            => Routing()
+                .ShouldMap("Admin/Memes/MakePublic/1")
+                .To<MemesController>(c => c.MakePublic(1));
     }
 }

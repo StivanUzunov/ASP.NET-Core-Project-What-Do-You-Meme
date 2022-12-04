@@ -21,10 +21,6 @@ namespace WhatDoYouMeme.Test.Routing
                     .WithPath("/Issues/Log")
                     .WithMethod(HttpMethod.Post))
                 .To<IssuesController>(c => c.Log(With.Any<AddIssueFormModel>()));
-        [Fact]
-        public void GetReviewedShouldBeMapped()
-            => Routing()
-                .ShouldMap("/Issues/IsReviewed/12")
-                .To<IssuesController>(c => c.IsReviewed(12));
+        
     }
 }

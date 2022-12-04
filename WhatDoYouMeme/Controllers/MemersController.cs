@@ -21,7 +21,7 @@ namespace WhatDoYouMeme.Controllers
         [HttpPost]
         public IActionResult Create(BecomeMemerFormModel memer)
         {
-            var userId = User.GerUserId();
+            var userId = User.GetUserId();
 
             if (memers.UserIsAlreadyAMemer(userId))
             {

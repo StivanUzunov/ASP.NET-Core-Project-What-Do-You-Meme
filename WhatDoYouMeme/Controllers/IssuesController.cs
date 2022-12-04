@@ -18,9 +18,10 @@ namespace WhatDoYouMeme.Controllers
             this.issues = issues;
         }
 
+        [Authorize]
         public IActionResult Log()
         {
-            var userId = User.GerUserId();
+            var userId = User.GetUserId();
 
 
             if (!memers.IsMemer(userId))
@@ -38,9 +39,9 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Log(AddIssueFormModel issue)
         {
-            var userId = User.GerUserId();
+            var userId = User.GetUserId();
             var memerId = memers.GetMemerId(userId);
-            var email = User.GerUserEmail();
+            var email = User.GetUserEmail();
 
             if (memerId == 0)
             {
@@ -52,21 +53,11 @@ namespace WhatDoYouMeme.Controllers
                 return View(issue);
             }
 
-            issues.Log(issue,memerId,email);
+            issues.Log(issue, memerId, email);
 
             TempData[GlobalMessageKey] = "Your issue was logged successfully and our admins will review it and you write back to you by email! Thank you! :)";
 
             return RedirectToAction(nameof(MemesController.All), "Memes");
-        }
-        [Authorize]
-        public IActionResult IsReviewed(int id)
-        {
-           issues.IsReviewed(id);
-
-            TempData[GlobalMessageKey] = "This issue was reviewed successfully!";
-
-            var url = Url.RouteUrl("areas", new { controller = "Issues", action = "All", area = "Admin" });
-            return Redirect(url);
         }
 
     }

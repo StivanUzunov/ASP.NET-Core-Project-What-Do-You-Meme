@@ -8,7 +8,7 @@
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
     {
-        var userId = this.User.GerUserId();
+        var userId = this.User.GetUserId();
         var userIsMemer = Memers.IsMemer(userId);
         var userIsAdmin = User.IsAdmin();
 

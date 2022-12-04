@@ -52,12 +52,6 @@ namespace WhatDoYouMeme.Test.Routing
                 .To<MemesController>(c => c.Edit(3,With.Any<EditMemeFormModel>()));
 
         [Fact]
-        public void GetMakePublicShouldBeMapped()
-            => Routing()
-                .ShouldMap("/Memes/MakePublic/1")
-                .To<MemesController>(c => c.MakePublic(1));
-
-        [Fact]
         public void GetDeleteShouldBeMapped()
             => Routing()
                 .ShouldMap("/Memes/Delete/2")

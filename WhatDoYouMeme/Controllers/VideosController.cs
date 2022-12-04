@@ -22,7 +22,7 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Add()
         {
-            var userId = User.GerUserId();
+            var userId = User.GetUserId();
 
             if (!memers.IsMemer(userId))
             {
@@ -36,7 +36,7 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Add(AddVideoFormModel video)
         {
-            var userId = User.GerUserId();
+            var userId = User.GetUserId();
             var memerId = memers.GetMemerId(userId);
 
             if (memerId == 0)
@@ -73,7 +73,7 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Like(int id)
         {
-            var userId = User.GerUserId();
+            var userId = User.GetUserId();
 
             if (!memers.IsMemer(userId))
             {
@@ -96,7 +96,7 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Edit(int id)
         {
-            var userId = User.GerUserId();
+            var userId = User.GetUserId();
             var memerId = memers.GetMemerId(userId);
 
             if (!memers.IsMemer(userId) && !User.IsAdmin())
@@ -124,7 +124,7 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Edit(int id, EditVideoFormModel video)
         {
-            var userId = User.GerUserId();
+            var userId = User.GetUserId();
             var memerId = memers.GetMemerId(userId);
             var videoData = videos.GetVideo(id);
 
@@ -154,21 +154,12 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Mine()
         {
-            var userId = User.GerUserId();
+            var userId = User.GetUserId();
 
             var myVideos = videos.Mine(userId);
 
             return View(myVideos);
         }
-
-        public IActionResult MakePublic(int id)
-        {
-           videos.MakePublic(id);
-
-            TempData[GlobalMessageKey] = "This video was approved successfully!";
-
-            var url = Url.RouteUrl("areas", new { controller = "Videos", action = "All", area = "Admin" });
-            return Redirect(url);
-        }
+       
     }
 }

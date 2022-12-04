@@ -51,11 +51,6 @@ namespace WhatDoYouMeme.Test.Routing
                     .WithMethod(HttpMethod.Post))
                 .To<VideosController>(c => c.Edit(3, With.Any<EditVideoFormModel>()));
 
-        [Fact]
-        public void GetMakePublicShouldBeMapped()
-            => Routing()
-                .ShouldMap("/Videos/MakePublic/1")
-                .To<VideosController>(c => c.MakePublic(1));
 
         [Fact]
         public void GetDeleteShouldBeMapped()

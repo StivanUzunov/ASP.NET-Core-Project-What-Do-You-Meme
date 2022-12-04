@@ -37,7 +37,7 @@ else
                     <td scope="col">@issue.MemerName</td>
                     <td scope="col">@issue.UserEmail</td>
                     <td scope="col">
-                        <a style="margin: 12px" asp-area="" asp-controller="Issues" asp-action="IsReviewed" asp-route-id="@issue.Id" class="btn btn-primary">Mark as viewed</a>
+                        <a style="margin: 12px" asp-area="Admin" asp-controller="Issues" asp-action="IsReviewed" asp-route-id="@issue.Id" class="btn btn-primary">Mark as viewed</a>
                     </td>
 
                 </tr>

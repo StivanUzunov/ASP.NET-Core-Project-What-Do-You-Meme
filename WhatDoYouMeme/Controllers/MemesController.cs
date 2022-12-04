@@ -27,7 +27,7 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Mine()
         {
-            var userId = User.GerUserId();
+            var userId = User.GetUserId();
 
             var myMemes = memes.Mine(userId);
 
@@ -44,7 +44,7 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Add()
         {
-            var userId = User.GerUserId();
+            var userId = User.GetUserId();
 
             if (!memers.IsMemer(userId))
             {
@@ -58,7 +58,7 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Add(AddMemeFormModel meme)
         {
-            var userId = User.GerUserId();
+            var userId = User.GetUserId();
             var memerId = memers.GetMemerId(userId);
 
             if (memerId == 0)
@@ -81,7 +81,7 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Edit(int id)
         {
-            var userId = User.GerUserId();
+            var userId = User.GetUserId();
             var memerId = memers.GetMemerId(userId);
 
             if (!memers.IsMemer(userId) && !User.IsAdmin())
@@ -108,7 +108,7 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Edit(int id, EditMemeFormModel meme)
         {
-            var userId = User.GerUserId();
+            var userId = User.GetUserId();
             var memerId = memers.GetMemerId(userId);
 
             var memeData = memes.GetMemeData(id);
@@ -136,16 +136,6 @@ namespace WhatDoYouMeme.Controllers
 
         }
 
-        public IActionResult MakePublic(int id)
-        {
-            memes.MakePublic(id);
-
-            TempData[GlobalMessageKey] = "This meme was approved successfully!";
-
-            var url = Url.RouteUrl("areas", new { controller = "Memes", action = "All", area = "Admin" });
-            return Redirect(url);
-        }
-
         [Authorize]
         public IActionResult Delete(int id)
         {
@@ -157,7 +147,7 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Like(int id)
         {
-            var userId = User.GerUserId();
+            var userId = User.GetUserId();
 
             if (!memers.IsMemer(userId))
             {

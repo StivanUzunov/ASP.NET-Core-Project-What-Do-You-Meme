@@ -35,7 +35,7 @@ else
                 <td scope="col">
                     <a style="margin: 12px" asp-area="" asp-controller="Memes" asp-action="Edit" asp-route-id="@meme.Id" class="btn btn-warning">Edit</a> <br>
                     <a style="margin: 12px" asp-area="" asp-controller="Memes" asp-action="Delete" asp-route-id="@meme.Id" class="btn btn-danger">Delete</a> <br>
-                    <a style="margin: 12px" asp-area="" asp-controller="Memes" asp-action="MakePublic" asp-route-id="@meme.Id" class="btn btn-primary">Make Public</a>
+                    <a style="margin: 12px" asp-area="Admin" asp-controller="Memes" asp-action="MakePublic" asp-route-id="@meme.Id" class="btn btn-primary">Make Public</a>
                 </td>
            
             </tr>

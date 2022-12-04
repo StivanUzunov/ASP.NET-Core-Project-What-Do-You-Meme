@@ -5,13 +5,13 @@ namespace WhatDoYouMeme.Infrastructure
 {
     public static class ClaimsPrincipalExtensions
     {
-        public static string GerUserId(this ClaimsPrincipal user)
+        public static string GetUserId(this ClaimsPrincipal user)
             => user.FindFirst(ClaimTypes.NameIdentifier).Value;
 
         public static bool IsAdmin(this ClaimsPrincipal user)
             => user.IsInRole(AdministratorRoleName);
 
-        public static string GerUserEmail(this ClaimsPrincipal user)
+        public static string GetUserEmail(this ClaimsPrincipal user)
             => user.FindFirst(ClaimTypes.Email).Value;
     }
 }
