@@ -56,9 +56,15 @@ namespace WhatDoYouMeme.Controllers
 
             return RedirectToAction(nameof(MemesController.Details), "Memes", new {id});
         }
+
         [Authorize]
         public IActionResult Delete(int id)
         {
+            if (!User.IsAdmin())
+            {
+                return BadRequest();
+            }
+
             var postId = comments.GetPostId(id);
 
             comments.DeleteComment(id);
@@ -123,10 +129,15 @@ namespace WhatDoYouMeme.Controllers
 
             return RedirectToAction(nameof(VideosController.Details), "Videos", new { id });
         }
-
+        [Authorize]
         public IActionResult DeleteOfVideo(int id)
         {
-           var videoId=  comments.GetVideoId(id);
+            if (!User.IsAdmin())
+            {
+                return BadRequest();
+            }
+
+            var videoId=  comments.GetVideoId(id);
 
             comments.DeleteCommentFromVideo(id);
 

@@ -14,7 +14,7 @@ namespace WhatDoYouMeme.Test.Controllers
     public class IssuesControllerTest
     {
         [Fact]
-        public void GeLogShouldBeForAuthorizedUsersAndMemersAndRedirectToAction()
+        public void GetLogShouldBeForAuthorizedUsersAndMemersAndRedirectToAction()
             => MyController<IssuesController>
                 .Instance(controller => controller.WithUser())
                 .Calling(c => c.Log())
@@ -26,7 +26,7 @@ namespace WhatDoYouMeme.Test.Controllers
                 .RedirectToAction("Create", "Memers");
 
         [Fact]
-        public void GeLogShouldBeForAuthorizedUsersAndMemersAndReturnView()
+        public void GetLogShouldBeForAuthorizedUsersAndMemersAndReturnView()
             => MyController<IssuesController>
                 .Instance(controller => controller.WithUser().WithData(new Memer
                 {
@@ -87,7 +87,7 @@ namespace WhatDoYouMeme.Test.Controllers
                 .RedirectToAction("All", "Memes");
 
       [Fact]
-      public void GeIsReviewedShouldBeForAuthorizedUsersAndAdminsAndShouldReturnBadRequest()
+      public void GetIsReviewedShouldBeForAuthorizedUsersAndAdminsAndShouldReturnBadRequest()
           => MyController<Areas.Admin.Controllers.IssuesController>
               .Instance(controller => controller.WithUser().WithData(new Issues
               {
@@ -103,7 +103,7 @@ namespace WhatDoYouMeme.Test.Controllers
               .BadRequest();
 
       [Fact]
-      public void GeIsReviewedShouldBeForAuthorizedUsersAndAdminsAndShouldRedirect()
+      public void GetIsReviewedShouldBeForAuthorizedUsersAndAdminsAndShouldRedirect()
           => MyController<Areas.Admin.Controllers.IssuesController>
               .Instance(controller => controller.WithUser(u=>u.InRole("Administrator")).WithData(new Issues
               {
@@ -117,6 +117,65 @@ namespace WhatDoYouMeme.Test.Controllers
               .AndAlso()
               .ShouldReturn()
               .RedirectToAction("All");
-
+      [Fact]
+      public void GetDeleteShouldBeForAuthorizedUsersAndAdminsAndShouldReturnBadRequest()
+          => MyController<Areas.Admin.Controllers.IssuesController>
+              .Instance(controller => controller.WithUser().WithData(new Issues
+              {
+                  Id = 2,
+                  MemerId = 2
+              }).WithRouteData())
+              .Calling(c => c.Delete())
+              .ShouldHave()
+              .ActionAttributes(attributes => attributes
+                  .RestrictingForAuthorizedRequests())
+              .AndAlso()
+              .ShouldReturn()
+              .BadRequest();
+      [Fact]
+      public void GetDeleteShouldBeForAuthorizedUsersAndAdminsAndShouldRedirect()
+          => MyController<Areas.Admin.Controllers.IssuesController>
+              .Instance(controller => controller.WithUser(u => u.InRole("Administrator")).WithData(new Issues
+              {
+                  Id = 2,
+                  MemerId = 2
+              }).WithRouteData())
+              .Calling(c => c.Delete())
+              .ShouldHave()
+              .ActionAttributes(attributes => attributes
+                  .RestrictingForAuthorizedRequests())
+              .AndAlso()
+              .ShouldReturn()
+              .RedirectToAction("All");
+      [Fact]
+      public void GetAllShouldBeForAuthorizedUsersAndAdminsAndShouldReturnBadRequest()
+          => MyController<Areas.Admin.Controllers.IssuesController>
+              .Instance(controller => controller.WithUser().WithData(new Issues
+              {
+                  Id = 2,
+                  MemerId = 2
+              }).WithRouteData())
+              .Calling(c => c.All())
+              .ShouldHave()
+              .ActionAttributes(attributes => attributes
+                  .RestrictingForAuthorizedRequests())
+              .AndAlso()
+              .ShouldReturn()
+              .BadRequest();
+      [Fact]
+      public void GetAllShouldBeForAuthorizedUsersAndAdminsAndShouldReturnData()
+          => MyController<Areas.Admin.Controllers.IssuesController>
+              .Instance(controller => controller.WithUser(u => u.InRole("Administrator")).WithData(new Issues
+              {
+                  Id = 2,
+                  MemerId = 2
+              }).WithRouteData())
+              .Calling(c => c.All())
+              .ShouldHave()
+              .ActionAttributes(attributes => attributes
+                  .RestrictingForAuthorizedRequests())
+              .AndAlso()
+              .ShouldReturn()
+              .View();
     }
 }
