@@ -89,12 +89,19 @@ namespace WhatDoYouMeme.Controllers
                 return RedirectToAction(nameof(MemersController.Create), "Memers");
             }
 
-            var meme = memes.Edit(id);
+            var memeData = memes.GetMemeData(id);
 
-            if (meme.MemerId != memerId && !User.IsAdmin())
+            if (memeData == null)
+            {
+                return BadRequest();
+            }
+
+            if (memeData.MemerId != memerId && !User.IsAdmin())
             {
                 return Unauthorized();
             }
+
+           var meme = memes.Edit(id);
 
             return View(new EditMemeFormModel
             {
@@ -138,7 +145,17 @@ namespace WhatDoYouMeme.Controllers
 
         [Authorize]
         public IActionResult Delete(int id)
-        {
+        { 
+            var userId = User.GetUserId();
+            var memerId = memers.GetMemerId(userId);
+
+            var memeData = memes.GetMemeData(id);
+
+            if (memerId != memeData.MemerId&& !User.IsAdmin())
+            {
+                return BadRequest();
+            }
+
             memes.Delete(id);
 
             return RedirectToAction(nameof(All));

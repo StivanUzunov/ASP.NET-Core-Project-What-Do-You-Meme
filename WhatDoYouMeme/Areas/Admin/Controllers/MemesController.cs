@@ -16,6 +16,11 @@ namespace WhatDoYouMeme.Areas.Admin.Controllers
         [Authorize]
         public IActionResult All()
         {
+            if (!User.IsAdmin())
+            {
+                return BadRequest();
+            }
+
             var allMemes = memes.AdminsAll();
 
             return View(allMemes);

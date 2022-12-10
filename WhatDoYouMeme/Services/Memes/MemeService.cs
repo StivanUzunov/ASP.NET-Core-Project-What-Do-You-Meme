@@ -119,7 +119,7 @@ namespace WhatDoYouMeme.Services.Memes
         public Post GetMemeData(int id)
         => data
             .Posts
-            .First(m => m.Id == id);
+            .FirstOrDefault(m => m.Id == id);
 
         public void EditMemeData(Post memeData, EditMemeFormModel meme)
         {
@@ -136,7 +136,7 @@ namespace WhatDoYouMeme.Services.Memes
         {
             var memeData = data
                 .Posts
-                .First(m => m.Id == id);
+                .FirstOrDefault(m => m.Id == id);
 
             memeData.isPublic = true;
 
@@ -147,7 +147,7 @@ namespace WhatDoYouMeme.Services.Memes
         {
             var meme = data
                 .Posts
-                .First(m => m.Id == id);
+                .FirstOrDefault(m => m.Id == id);
 
             data.Remove(meme);
 
@@ -158,7 +158,7 @@ namespace WhatDoYouMeme.Services.Memes
         {
             var meme = data
                 .Posts
-                .First(m => m.Id == id);
+                .FirstOrDefault(m => m.Id == id);
 
             meme.Likes++;
 
