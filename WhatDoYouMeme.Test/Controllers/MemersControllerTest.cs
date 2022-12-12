@@ -45,6 +45,6 @@ namespace WhatDoYouMeme.Test.Controllers
                     .ContainingEntryWithKey(GlobalMessageKey))
                 .AndAlso()
                 .ShouldReturn()
-                .RedirectToAction("All","Memes");
+                .RedirectToAction("All", "Memes");
     }
 }

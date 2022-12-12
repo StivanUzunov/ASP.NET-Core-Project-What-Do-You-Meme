@@ -294,11 +294,11 @@ namespace WhatDoYouMeme.Test.Controllers
         public void GetLikeVideoShouldBeForAuthorizedUsersAndAdminsAndShouldRedirectToAction()
             => MyController<CommentsController>
                 .Instance(controller => controller.WithUser().WithData(new Memer
-                    {
-                        UserId = TestUser.Identifier,
-                        Name = "Stivan Uzunov",
-                        PhoneNumber = "+359123456789"
-                    })
+                {
+                    UserId = TestUser.Identifier,
+                    Name = "Stivan Uzunov",
+                    PhoneNumber = "+359123456789"
+                })
                     .WithData(new Comment
                     {
                         Id = 2,

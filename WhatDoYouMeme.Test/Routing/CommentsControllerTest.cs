@@ -6,7 +6,7 @@ using WhatDoYouMeme.Models.Comments;
 namespace WhatDoYouMeme.Test.Routing
 {
     using static MyMvc;
-  public  class CommentsControllerTest
+    public class CommentsControllerTest
     {
         [Fact]
         public void GetAddShouldBeMapped()
@@ -20,7 +20,7 @@ namespace WhatDoYouMeme.Test.Routing
                 .ShouldMap(request => request
                     .WithPath("/Comments/Add/3")
                     .WithMethod(HttpMethod.Post))
-                .To<CommentsController>(c => c.Add(3,new AddCommentFormModel()));
+                .To<CommentsController>(c => c.Add(3, new AddCommentFormModel()));
 
         [Fact]
         public void GetDeleteShouldBeMapped()

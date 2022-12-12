@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WhatDoYouMeme.Infrastructure;
 using WhatDoYouMeme.Services.Videos;
 using static WhatDoYouMeme.WebConstants;
 
@@ -14,6 +15,11 @@ namespace WhatDoYouMeme.Areas.Admin.Controllers
         [Authorize]
         public IActionResult All()
         {
+            if (!User.IsAdmin())
+            {
+                return BadRequest();
+            }
+
             var allVideos = videos.AdminsAll();
 
             return View(allVideos);
@@ -22,6 +28,11 @@ namespace WhatDoYouMeme.Areas.Admin.Controllers
         [Authorize]
         public IActionResult MakePublic(int id)
         {
+            if (!User.IsAdmin())
+            {
+                return BadRequest();
+            }
+
             videos.MakePublic(id);
 
             TempData[GlobalMessageKey] = "This video was approved successfully!";

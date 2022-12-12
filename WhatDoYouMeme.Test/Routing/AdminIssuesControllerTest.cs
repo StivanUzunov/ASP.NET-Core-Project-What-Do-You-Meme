@@ -6,7 +6,7 @@ using IssuesController = WhatDoYouMeme.Areas.Admin.Controllers.IssuesController;
 namespace WhatDoYouMeme.Test.Routing
 {
     using static MyMvc;
-  public  class AdminIssuesControllerTest
+    public class AdminIssuesControllerTest
     {
         [Fact]
         public void GetAllShouldBeMapped()

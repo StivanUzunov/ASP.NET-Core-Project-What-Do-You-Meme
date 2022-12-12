@@ -6,7 +6,7 @@ using Xunit;
 namespace WhatDoYouMeme.Test.Routing
 {
     using static MyMvc;
-    public   class VideosControllerTest
+    public class VideosControllerTest
     {
         [Fact]
         public void GetAllShouldBeMapped()

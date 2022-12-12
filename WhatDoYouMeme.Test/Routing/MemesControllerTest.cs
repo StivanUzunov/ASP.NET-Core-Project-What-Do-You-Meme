@@ -6,7 +6,7 @@ using Xunit;
 namespace WhatDoYouMeme.Test.Routing
 {
     using static MyMvc;
-   public class MemesControllerTest
+    public class MemesControllerTest
     {
         [Fact]
         public void GetAllShouldBeMapped()
@@ -49,7 +49,7 @@ namespace WhatDoYouMeme.Test.Routing
                 .ShouldMap(request => request
                     .WithPath("/Memes/Edit/3")
                     .WithMethod(HttpMethod.Post))
-                .To<MemesController>(c => c.Edit(3,With.Any<EditMemeFormModel>()));
+                .To<MemesController>(c => c.Edit(3, With.Any<EditMemeFormModel>()));
 
         [Fact]
         public void GetDeleteShouldBeMapped()

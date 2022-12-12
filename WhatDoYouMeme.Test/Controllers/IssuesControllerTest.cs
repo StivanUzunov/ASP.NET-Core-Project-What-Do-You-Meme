@@ -46,11 +46,11 @@ namespace WhatDoYouMeme.Test.Controllers
         [InlineData("TestTitle", "TestDescription")]
         public void PostLogShouldBeForAuthorizedUserAndMemerAndReturnRedirectToAction(string title, string description)
             => MyController<IssuesController>
-                .Instance(controller => controller.WithUser(u=>u.WithClaim(ClaimTypes.Email, "testemail@gmail.com")))
+                .Instance(controller => controller.WithUser(u => u.WithClaim(ClaimTypes.Email, "testemail@gmail.com")))
                 .Calling(c => c.Log(new AddIssueFormModel
                 {
-                   Title = title,
-                   Description = description
+                    Title = title,
+                    Description = description
                 }))
                 .ShouldHave()
                 .ActionAttributes(attributes => attributes.RestrictingForHttpMethod(HttpMethod.Post).RestrictingForAuthorizedRequests())
@@ -86,96 +86,96 @@ namespace WhatDoYouMeme.Test.Controllers
                 .ShouldReturn()
                 .RedirectToAction("All", "Memes");
 
-      [Fact]
-      public void GetIsReviewedShouldBeForAuthorizedUsersAndAdminsAndShouldReturnBadRequest()
-          => MyController<Areas.Admin.Controllers.IssuesController>
-              .Instance(controller => controller.WithUser().WithData(new Issues
-              {
-                  Id = 2,
-                  MemerId = 2
-              }).WithRouteData())
-              .Calling(c => c.IsReviewed(2))
-              .ShouldHave()
-              .ActionAttributes(attributes => attributes
-                  .RestrictingForAuthorizedRequests())
-              .AndAlso()
-              .ShouldReturn()
-              .BadRequest();
+        [Fact]
+        public void GetIsReviewedShouldBeForAuthorizedUsersAndAdminsAndShouldReturnBadRequest()
+            => MyController<Areas.Admin.Controllers.IssuesController>
+                .Instance(controller => controller.WithUser().WithData(new Issues
+                {
+                    Id = 2,
+                    MemerId = 2
+                }).WithRouteData())
+                .Calling(c => c.IsReviewed(2))
+                .ShouldHave()
+                .ActionAttributes(attributes => attributes
+                    .RestrictingForAuthorizedRequests())
+                .AndAlso()
+                .ShouldReturn()
+                .BadRequest();
 
-      [Fact]
-      public void GetIsReviewedShouldBeForAuthorizedUsersAndAdminsAndShouldRedirect()
-          => MyController<Areas.Admin.Controllers.IssuesController>
-              .Instance(controller => controller.WithUser(u=>u.InRole("Administrator")).WithData(new Issues
-              {
-                  Id = 2,
-                  MemerId = 2
-              }).WithRouteData())
-              .Calling(c => c.IsReviewed(2))
-              .ShouldHave()
-              .ActionAttributes(attributes => attributes
-                  .RestrictingForAuthorizedRequests())
-              .AndAlso()
-              .ShouldReturn()
-              .RedirectToAction("All");
-      [Fact]
-      public void GetDeleteShouldBeForAuthorizedUsersAndAdminsAndShouldReturnBadRequest()
-          => MyController<Areas.Admin.Controllers.IssuesController>
-              .Instance(controller => controller.WithUser().WithData(new Issues
-              {
-                  Id = 2,
-                  MemerId = 2
-              }).WithRouteData())
-              .Calling(c => c.Delete())
-              .ShouldHave()
-              .ActionAttributes(attributes => attributes
-                  .RestrictingForAuthorizedRequests())
-              .AndAlso()
-              .ShouldReturn()
-              .BadRequest();
-      [Fact]
-      public void GetDeleteShouldBeForAuthorizedUsersAndAdminsAndShouldRedirect()
-          => MyController<Areas.Admin.Controllers.IssuesController>
-              .Instance(controller => controller.WithUser(u => u.InRole("Administrator")).WithData(new Issues
-              {
-                  Id = 2,
-                  MemerId = 2
-              }).WithRouteData())
-              .Calling(c => c.Delete())
-              .ShouldHave()
-              .ActionAttributes(attributes => attributes
-                  .RestrictingForAuthorizedRequests())
-              .AndAlso()
-              .ShouldReturn()
-              .RedirectToAction("All");
-      [Fact]
-      public void GetAllShouldBeForAuthorizedUsersAndAdminsAndShouldReturnBadRequest()
-          => MyController<Areas.Admin.Controllers.IssuesController>
-              .Instance(controller => controller.WithUser().WithData(new Issues
-              {
-                  Id = 2,
-                  MemerId = 2
-              }).WithRouteData())
-              .Calling(c => c.All())
-              .ShouldHave()
-              .ActionAttributes(attributes => attributes
-                  .RestrictingForAuthorizedRequests())
-              .AndAlso()
-              .ShouldReturn()
-              .BadRequest();
-      [Fact]
-      public void GetAllShouldBeForAuthorizedUsersAndAdminsAndShouldReturnData()
-          => MyController<Areas.Admin.Controllers.IssuesController>
-              .Instance(controller => controller.WithUser(u => u.InRole("Administrator")).WithData(new Issues
-              {
-                  Id = 2,
-                  MemerId = 2
-              }).WithRouteData())
-              .Calling(c => c.All())
-              .ShouldHave()
-              .ActionAttributes(attributes => attributes
-                  .RestrictingForAuthorizedRequests())
-              .AndAlso()
-              .ShouldReturn()
-              .View();
+        [Fact]
+        public void GetIsReviewedShouldBeForAuthorizedUsersAndAdminsAndShouldRedirect()
+            => MyController<Areas.Admin.Controllers.IssuesController>
+                .Instance(controller => controller.WithUser(u => u.InRole("Administrator")).WithData(new Issues
+                {
+                    Id = 2,
+                    MemerId = 2
+                }).WithRouteData())
+                .Calling(c => c.IsReviewed(2))
+                .ShouldHave()
+                .ActionAttributes(attributes => attributes
+                    .RestrictingForAuthorizedRequests())
+                .AndAlso()
+                .ShouldReturn()
+                .RedirectToAction("All");
+        [Fact]
+        public void GetDeleteShouldBeForAuthorizedUsersAndAdminsAndShouldReturnBadRequest()
+            => MyController<Areas.Admin.Controllers.IssuesController>
+                .Instance(controller => controller.WithUser().WithData(new Issues
+                {
+                    Id = 2,
+                    MemerId = 2
+                }).WithRouteData())
+                .Calling(c => c.Delete())
+                .ShouldHave()
+                .ActionAttributes(attributes => attributes
+                    .RestrictingForAuthorizedRequests())
+                .AndAlso()
+                .ShouldReturn()
+                .BadRequest();
+        [Fact]
+        public void GetDeleteShouldBeForAuthorizedUsersAndAdminsAndShouldRedirect()
+            => MyController<Areas.Admin.Controllers.IssuesController>
+                .Instance(controller => controller.WithUser(u => u.InRole("Administrator")).WithData(new Issues
+                {
+                    Id = 2,
+                    MemerId = 2
+                }).WithRouteData())
+                .Calling(c => c.Delete())
+                .ShouldHave()
+                .ActionAttributes(attributes => attributes
+                    .RestrictingForAuthorizedRequests())
+                .AndAlso()
+                .ShouldReturn()
+                .RedirectToAction("All");
+        [Fact]
+        public void GetAllShouldBeForAuthorizedUsersAndAdminsAndShouldReturnBadRequest()
+            => MyController<Areas.Admin.Controllers.IssuesController>
+                .Instance(controller => controller.WithUser().WithData(new Issues
+                {
+                    Id = 2,
+                    MemerId = 2
+                }).WithRouteData())
+                .Calling(c => c.All())
+                .ShouldHave()
+                .ActionAttributes(attributes => attributes
+                    .RestrictingForAuthorizedRequests())
+                .AndAlso()
+                .ShouldReturn()
+                .BadRequest();
+        [Fact]
+        public void GetAllShouldBeForAuthorizedUsersAndAdminsAndShouldReturnData()
+            => MyController<Areas.Admin.Controllers.IssuesController>
+                .Instance(controller => controller.WithUser(u => u.InRole("Administrator")).WithData(new Issues
+                {
+                    Id = 2,
+                    MemerId = 2
+                }).WithRouteData())
+                .Calling(c => c.All())
+                .ShouldHave()
+                .ActionAttributes(attributes => attributes
+                    .RestrictingForAuthorizedRequests())
+                .AndAlso()
+                .ShouldReturn()
+                .View();
     }
 }

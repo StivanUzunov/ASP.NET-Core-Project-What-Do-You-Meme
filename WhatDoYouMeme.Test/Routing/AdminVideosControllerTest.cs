@@ -6,7 +6,7 @@ namespace WhatDoYouMeme.Test.Routing
 {
     using static MyMvc;
 
-   public class AdminVideosControllerTest
+    public class AdminVideosControllerTest
     {
         [Fact]
         public void GetAllShouldBeMapped()

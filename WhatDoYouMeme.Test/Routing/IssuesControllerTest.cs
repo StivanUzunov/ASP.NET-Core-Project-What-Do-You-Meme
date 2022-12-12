@@ -7,7 +7,7 @@ namespace WhatDoYouMeme.Test.Routing
 {
     using static MyMvc;
 
-  public  class IssuesControllerTest
+    public class IssuesControllerTest
     {
         [Fact]
         public void GetLogShouldBeMapped()
@@ -21,6 +21,6 @@ namespace WhatDoYouMeme.Test.Routing
                     .WithPath("/Issues/Log")
                     .WithMethod(HttpMethod.Post))
                 .To<IssuesController>(c => c.Log(With.Any<AddIssueFormModel>()));
-        
+
     }
 }

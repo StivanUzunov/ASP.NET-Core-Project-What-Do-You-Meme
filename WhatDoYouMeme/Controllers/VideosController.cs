@@ -88,6 +88,16 @@ namespace WhatDoYouMeme.Controllers
         [Authorize]
         public IActionResult Delete(int id)
         {
+            var userId = User.GetUserId();
+            var memerId = memers.GetMemerId(userId);
+
+            var videoData = videos.GetVideo(id);
+
+            if (memerId != videoData.MemerId && !User.IsAdmin())
+            {
+                return BadRequest();
+            }
+
             videos.Delete(id);
 
             return RedirectToAction(nameof(All));
@@ -99,17 +109,19 @@ namespace WhatDoYouMeme.Controllers
             var userId = User.GetUserId();
             var memerId = memers.GetMemerId(userId);
 
+            var videoData = videos.GetVideo(id);
+
             if (!memers.IsMemer(userId) && !User.IsAdmin())
             {
                 return RedirectToAction(nameof(MemersController.Create), "Memers");
             }
 
-            var video = videos.Edit(id);
-
-            if (video.MemerId != memerId && !User.IsAdmin())
+            if (videoData.MemerId != memerId && !User.IsAdmin())
             {
                 return Unauthorized();
             }
+
+            var video = videos.Edit(id);
 
             return View(new EditVideoFormModel
             {
